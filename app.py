@@ -487,10 +487,19 @@ WORKFLOW_STEPS = [
 ]
 
 
-def render_connected_workflow(active_agent_key: str = None, completed_keys: list = None) -> str:
-    """Generates connected vertical tree HTML with animated dots and green connecting lines."""
+def render_connected_workflow(
+    active_agent_key: str = None,
+    completed_keys: list = None,
+    step_summaries: dict = None,
+) -> str:
+    """Generates connected vertical tree HTML with animated dots and green connecting lines.
+
+    Constructed strictly without leading whitespace or indentation to prevent
+    Markdown parsers from interpreting any tag as an indented code block.
+    """
     completed_keys = completed_keys or []
-    html = ['<div class="workflow-tree">']
+    step_summaries = step_summaries or {}
+    lines = ['<div class="workflow-tree">']
 
     for idx, step in enumerate(WORKFLOW_STEPS, 1):
         key = step["key"]
@@ -500,28 +509,46 @@ def render_connected_workflow(active_agent_key: str = None, completed_keys: list
             badge = "Completed"
         elif key == active_agent_key:
             state = "active"
-            dot_content = f"{idx}"
-            badge = "Active"
+            dot_content = str(idx)
+            badge = "In Progress"
         else:
             state = "pending"
-            dot_content = f"{idx}"
+            dot_content = str(idx)
             badge = "Pending"
 
-        html.append(f"""
-        <div class="tree-node {state}">
-            <div class="tree-dot">{dot_content}</div>
-            <div class="tree-content">
-                <div class="tree-header">
-                    <div class="tree-title">{step['icon']} {step['title']}</div>
-                    <span class="tree-badge">{badge}</span>
-                </div>
-                <div class="tree-desc">{step['desc']}</div>
-            </div>
-        </div>
-        """)
+        summary_text = step_summaries.get(key)
+        if summary_text:
+            desc_html = f'<div class="tree-desc" style="color:#0f172a; font-weight:500;">{summary_text}</div>'
+        else:
+            desc_html = f'<div class="tree-desc">{step["desc"]}</div>'
 
-    html.append('</div>')
-    return "".join(html)
+        lines.append(
+            f'<div class="tree-node {state}">'
+            f'<div class="tree-dot">{dot_content}</div>'
+            f'<div class="tree-content">'
+            f'<div class="tree-header">'
+            f'<div class="tree-title">{step["icon"]} {step["title"]}</div>'
+            f'<span class="tree-badge">{badge}</span>'
+            f'</div>'
+            f'{desc_html}'
+            f'</div>'
+            f'</div>'
+        )
+
+    lines.append('</div>')
+    return "".join(lines)
+
+
+def get_step_summaries(res: dict) -> dict:
+    """Extract human-readable one-line summaries for completed steps."""
+    if not res:
+        return {}
+    return {
+        "Query_Agent": f"Category: {res.get('category', 'General')} · Urgency: {res.get('urgency', 'Low')} · Sentiment: {res.get('sentiment', 'Neutral')}",
+        "Knowledge_Agent": f"Sources consulted: {res.get('kb_sources', 'None')}",
+        "Resolution_Agent": f"Grounded reply ready · Confidence: {res.get('confidence', 'High')}",
+        "Log_Agent": f"Decision: {res.get('status', 'Resolved')} · Ticket: {res.get('ticket_id', 'N/A')}",
+    }
 
 
 def load_logs() -> pd.DataFrame:
@@ -726,6 +753,7 @@ with tab_console:
     # ── RIGHT: Agent Execution & Results ──────────────────
     with col_result:
         st.markdown('<div class="section-title">🤖 Multi-Agent Workflow</div>', unsafe_allow_html=True)
+        tree_placeholder = st.empty()
 
         # ── Handle new submission ──
         if submit:
@@ -738,11 +766,10 @@ with tab_console:
                 st.session_state["latest_result"] = None
                 st.session_state["latest_updates"] = []
 
-                # Dynamic step-by-step tree placeholder
-                tree_placeholder = st.empty()
                 completed_agents = []
+                live_summaries = {}
 
-                # Step 1 (Query Agent) starts as active
+                # Stage 0: Step 1 (Query Agent) starts as active
                 tree_placeholder.markdown(
                     render_connected_workflow(active_agent_key="Query_Agent", completed_keys=[]),
                     unsafe_allow_html=True,
@@ -774,8 +801,34 @@ with tab_console:
                         ):
                             if event["type"] == "agent_message":
                                 src = event["source"]
-                                workflow_state["updates"].append((src, event["content"]))
-                                completed_agents.append(src)
+                                cnt = event["content"]
+                                workflow_state["updates"].append((src, cnt))
+                                if src not in completed_agents:
+                                    completed_agents.append(src)
+
+                                # Live inline summaries per agent
+                                if src == "Query_Agent":
+                                    cat_m = re.search(r"Category:\s*([A-Za-z]+)", cnt, re.I)
+                                    urg_m = re.search(r"Urgency:\s*(Low|Medium|High)", cnt, re.I)
+                                    sent_m = re.search(r"Sentiment:\s*([A-Za-z ]+)", cnt, re.I)
+                                    cat_val = cat_m.group(1) if cat_m else "Classified"
+                                    urg_val = urg_m.group(1) if urg_m else "Normal"
+                                    sent_val = sent_m.group(1).strip() if sent_m else "Neutral"
+                                    live_summaries["Query_Agent"] = f"Category: {cat_val} · Urgency: {urg_val} · Sentiment: {sent_val}"
+                                elif src == "Knowledge_Agent":
+                                    sources = re.findall(r"\[Source:\s*([^\]]+)\]", cnt)
+                                    if sources:
+                                        live_summaries["Knowledge_Agent"] = f"Sources: {', '.join(dict.fromkeys(sources))}"
+                                    else:
+                                        live_summaries["Knowledge_Agent"] = "No matching documents found in KB"
+                                elif src == "Resolution_Agent":
+                                    conf_m = re.search(r"Confidence:\s*(High|Low)", cnt, re.I)
+                                    conf_val = conf_m.group(1) if conf_m else "High"
+                                    live_summaries["Resolution_Agent"] = f"Resolution drafted · Confidence: {conf_val}"
+                                elif src == "Log_Agent":
+                                    stat_m = re.search(r"Status:\s*(Resolved|Escalated)", cnt, re.I)
+                                    stat_val = stat_m.group(1) if stat_m else "Completed"
+                                    live_summaries["Log_Agent"] = f"Outcome: {stat_val} · Ticket logged to CSV"
 
                                 # Next node becomes active, prior nodes & line turn green
                                 next_step = next_agent_lookup.get(src)
@@ -783,6 +836,7 @@ with tab_console:
                                     render_connected_workflow(
                                         active_agent_key=next_step,
                                         completed_keys=completed_agents,
+                                        step_summaries=live_summaries,
                                     ),
                                     unsafe_allow_html=True,
                                 )
@@ -791,11 +845,14 @@ with tab_console:
 
                     asyncio.run(_run())
 
-                    # Final state: all 4 nodes green with full connecting line
+                    # Final state: all 4 nodes green with full connecting line and consolidated summaries
+                    final_res = workflow_state["final_data"]
+                    final_summaries = get_step_summaries(final_res) if final_res else live_summaries
                     tree_placeholder.markdown(
                         render_connected_workflow(
                             active_agent_key=None,
                             completed_keys=[s["key"] for s in WORKFLOW_STEPS],
+                            step_summaries=final_summaries,
                         ),
                         unsafe_allow_html=True,
                     )
@@ -814,6 +871,23 @@ with tab_console:
                         st.error(f"**Agent error:** {error_msg}", icon="🚨")
                 finally:
                     st.session_state["is_processing"] = False
+        else:
+            # Steady-state: Render workflow tree if result exists, or initial pending state
+            existing_res = st.session_state.get("latest_result")
+            if existing_res:
+                tree_placeholder.markdown(
+                    render_connected_workflow(
+                        active_agent_key=None,
+                        completed_keys=[s["key"] for s in WORKFLOW_STEPS],
+                        step_summaries=get_step_summaries(existing_res),
+                    ),
+                    unsafe_allow_html=True,
+                )
+            else:
+                tree_placeholder.markdown(
+                    render_connected_workflow(active_agent_key=None, completed_keys=[]),
+                    unsafe_allow_html=True,
+                )
 
         # ── Display persisted result (survives re-runs) ──
         res = st.session_state.get("latest_result")
