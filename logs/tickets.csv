@@ -504,3 +504,39 @@ Customer Support Team",Resolved,None,Product,Medium,Neutral
 TKT-0056,2026-11-04 15:08:38,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
 TKT-0057,2026-11-04 15:09:25,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
 TKT-0058,2026-11-04 15:17:36,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0059,2026-11-04 15:21:27,Vedha · ORD-4510,"The trimmer that I ordered is damaged, can I get replacement/refund for the same?",Product · Medium · Frustrated,"refund_policy.md, product_faq.md","Dear Vedha,
+
+I’m truly sorry to hear that the trimmer you received is damaged. I understand how frustrating this situation can be. According to our refund policy, you are entitled to a full refund or a free replacement for damaged items, and you won’t need to pay any return shipping fees.
+
+To proceed with your request, please ensure that you submit your claim within 7 calendar days of the package delivery. If you could provide me with any additional details or photos of the damage, that would be very helpful in expediting the process.
+
+Thank you for your understanding, and I look forward to resolving this for you as quickly as possible.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Product,Medium,Frustrated
+TKT-0060,2026-11-04 15:21:27,Vedha · ORD-4510,"The trimmer that I ordered is damaged, can I get replacement/refund for the same?",Product · Medium · Frustrated,"refund_policy.md, product_faq.md","Dear Vedha,
+
+I’m truly sorry to hear that the trimmer you received is damaged. I understand how frustrating this situation can be. According to our refund policy, you are entitled to a full refund or a free replacement for damaged items, and you won’t need to pay any return shipping fees.
+
+To proceed with your request, please ensure that you submit your claim within 7 calendar days of the package delivery. If you could provide me with any additional details or photos of the damage, that would be very helpful in expediting the process.
+
+Thank you for your understanding, and I look forward to resolving this for you as quickly as possible.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Product,Medium,Frustrated
+TKT-0061,2026-11-04 15:23:00,Vedha · ORD-4510,"I've been tracking my order since yesterday, but haven't received any response yet, can I get an update on this please?",Shipping · Medium · Neutral,shipping_policy.md,"Hi Vedha, 
+
+Thank you for reaching out regarding your order (ORD-4510). I understand how important it is to receive updates on your shipment. Please note that if your scheduled delivery date passed yesterday, we recommend allowing a 24 to 48 hour buffer period, as carriers often update delivery statuses or attempt redelivery the next business day. 
+
+If your package has not moved or arrived after 3 consecutive business days past the estimated delivery date, please let us know, and we can assist you further with filing a carrier claim or requesting a replacement shipment.
+
+Thank you for your patience, and please feel free to reach out if you have any more questions.",Resolved,None,Shipping,Medium,Neutral
+TKT-0062,2026-11-04 15:23:00,Vedha · ORD-4510,"I've been tracking my order since yesterday, but haven't received any response yet, can I get an update on this please?",Shipping · Medium · Neutral,shipping_policy.md,"Hi Vedha, 
+
+Thank you for reaching out regarding your order (ORD-4510). I understand how important it is to receive updates on your shipment. Please note that if your scheduled delivery date passed yesterday, we recommend allowing a 24 to 48 hour buffer period, as carriers often update delivery statuses or attempt redelivery the next business day. 
+
+If your package has not moved or arrived after 3 consecutive business days past the estimated delivery date, please let us know, and we can assist you further with filing a carrier claim or requesting a replacement shipment.
+
+Thank you for your patience, and please feel free to reach out if you have any more questions.",Resolved,None,Shipping,Medium,Neutral
