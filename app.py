@@ -1,238 +1,538 @@
-"""Streamlit Application for AI Customer Support Automation Desk.
+"""AI Customer Support Automation Desk — Production Streamlit UI.
 
-Built with AutoGen v0.4+, ChromaDB vector RAG, and Streamlit.
+Enterprise-grade multi-agent support console with live agent execution
+visualizer, real-time analytics dashboard, and polished ticket history viewer.
+Built with AutoGen v0.4+, ChromaDB RAG, and Streamlit.
 """
 
 import asyncio
 import os
+from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Any, List, Tuple
+
 import pandas as pd
 import streamlit as st
 
 from core.config import get_available_provider, get_model_client, LOG_FILE, KB_DIR
-from core.team import process_complaint_stream, process_complaint
+from core.team import process_complaint_stream
 from tools.ticket_logger import CSV_COLUMNS
 
-# Page configuration
+# ═══════════════════════════════════════════════════════════════════
+#  PAGE CONFIG  (must be first Streamlit call)
+# ═══════════════════════════════════════════════════════════════════
 st.set_page_config(
-    page_title="AI Customer Support Desk",
-    page_icon="🎧",
+    page_title="AI Support Desk · AutoGen Multi-Agent",
+    page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS for styling
+# ═══════════════════════════════════════════════════════════════════
+#  CUSTOM CSS — Deep Indigo / Slate Professional Theme
+# ═══════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
-    .metric-card {
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        padding: 15px;
-        border-left: 5px solid #4CAF50;
-        margin-bottom: 10px;
-    }
-    .badge-resolved {
-        display: inline-block;
-        background-color: #2e7d32;
-        color: white;
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 0.9rem;
-    }
-    .badge-escalated {
-        display: inline-block;
-        background-color: #c62828;
-        color: white;
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 0.9rem;
-    }
-    .agent-box {
-        background-color: #f0f4f8;
-        border-radius: 6px;
-        padding: 12px;
-        margin-top: 8px;
-        margin-bottom: 8px;
-        border-left: 4px solid #1976d2;
-    }
+/* ── Global polish ─────────────────────────────────────── */
+[data-testid="stAppViewContainer"] { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+section[data-testid="stSidebar"] { background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); }
+section[data-testid="stSidebar"] * { color: #e2e8f0 !important; }
+section[data-testid="stSidebar"] .stSelectbox label,
+section[data-testid="stSidebar"] .stTextInput label { color: #94a3b8 !important; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; }
+section[data-testid="stSidebar"] hr { border-color: #334155 !important; }
+section[data-testid="stSidebar"] .stButton > button { background: #334155; border: 1px solid #475569; color: #f1f5f9 !important; border-radius: 8px; transition: all 0.2s; }
+section[data-testid="stSidebar"] .stButton > button:hover { background: #475569; border-color: #64748b; }
+
+/* ── Header banner ─────────────────────────────────────── */
+.hero-banner {
+    background: linear-gradient(135deg, #1e293b 0%, #312e81 50%, #4338ca 100%);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%);
+    border-radius: 50%;
+}
+.hero-banner h1 { margin: 0 0 0.3rem 0; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; }
+.hero-banner p  { margin: 0; font-size: 0.95rem; color: #c7d2fe; font-weight: 400; }
+
+/* ── Metric cards ──────────────────────────────────────── */
+.kpi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.kpi-card:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.kpi-value { font-size: 2rem; font-weight: 800; color: #1e293b; line-height: 1.1; }
+.kpi-label { font-size: 0.78rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.25rem; }
+.kpi-accent-blue   .kpi-value { color: #4338ca; }
+.kpi-accent-green  .kpi-value { color: #16a34a; }
+.kpi-accent-red    .kpi-value { color: #dc2626; }
+.kpi-accent-amber  .kpi-value { color: #d97706; }
+
+/* ── Status badges / pills ─────────────────────────────── */
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.02em;
+}
+.pill-resolved {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: #166534;
+    border: 1px solid #86efac;
+}
+.pill-escalated {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+.pill-icon { font-size: 1.05rem; }
+
+/* ── Agent timeline step card ──────────────────────────── */
+.agent-step {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #6366f1;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.2s;
+}
+.agent-step:hover { border-left-color: #4338ca; }
+.agent-step-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.5rem;
+}
+.agent-step-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.agent-step-icon.query    { background: #ede9fe; }
+.agent-step-icon.kb       { background: #e0f2fe; }
+.agent-step-icon.resolve  { background: #fef3c7; }
+.agent-step-icon.log      { background: #d1fae5; }
+.agent-step-name  { font-weight: 700; font-size: 0.88rem; color: #1e293b; }
+.agent-step-role  { font-size: 0.78rem; color: #64748b; }
+
+/* ── Response card ─────────────────────────────────────── */
+.response-card {
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    position: relative;
+}
+.response-card.resolved {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px solid #86efac;
+    color: #14532d;
+}
+.response-card.escalated {
+    background: linear-gradient(135deg, #fef2f2, #fff1f2);
+    border: 1px solid #fca5a5;
+    color: #7f1d1d;
+}
+
+/* ── Detail grid ───────────────────────────────────────── */
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 1rem 0;
+}
+.detail-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    text-align: center;
+}
+.detail-item .label { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; }
+.detail-item .value { font-size: 1rem; font-weight: 700; color: #1e293b; margin-top: 2px; }
+
+/* ── Complaint quote ───────────────────────────────────── */
+.complaint-quote {
+    background: #f1f5f9;
+    border-left: 4px solid #6366f1;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.25rem;
+    font-style: italic;
+    color: #334155;
+    margin: 0.75rem 0;
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+/* ── Section titles ────────────────────────────────────── */
+.section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Sidebar knowledge-base chips ──────────────────────── */
+.kb-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #334155;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    padding: 4px 10px;
+    margin: 3px 2px;
+    font-size: 0.78rem;
+    color: #cbd5e1 !important;
+}
+
+/* ── Polish native Streamlit elements ──────────────────── */
+.stTabs [data-baseweb="tab-list"] { gap: 8px; }
+.stTabs [data-baseweb="tab"] {
+    border-radius: 10px 10px 0 0;
+    padding: 10px 24px;
+    font-weight: 600;
+}
+button[kind="primary"] {
+    background: linear-gradient(135deg, #4338ca, #6366f1) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    padding: 0.6rem 1.5rem !important;
+    transition: transform 0.15s, box-shadow 0.15s !important;
+}
+button[kind="primary"]:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(99,102,241,0.35) !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
 
-# Preset test cases from assignment PDF + custom test cases
-TEST_CASES = {
-    "Select a pre-filled test case...": None,
-    "Test 1: Where is my order? (Standard Shipping -> Resolved)": {
-        "name": "Priya Sharma",
-        "order_id": "ORD-4512",
+# ═══════════════════════════════════════════════════════════════════
+#  CONSTANTS — Preset Test Cases
+# ═══════════════════════════════════════════════════════════════════
+TEST_CASES: Dict[str, Any] = {
+    "— Select a test case —": None,
+    "TC-1 · Late Shipping (Resolved)": {
+        "name": "Priya Sharma", "order_id": "ORD-4512",
         "complaint": "Where is my order? It was supposed to arrive yesterday.",
     },
-    "Test 2: Shoe return and refund request (Refund Policy -> Resolved)": {
-        "name": "Alex Johnson",
-        "order_id": "ORD-8821",
+    "TC-2 · Shoe Return & Refund (Resolved)": {
+        "name": "Alex Johnson", "order_id": "ORD-8821",
         "complaint": "I want to return the shoes I bought last week. How do I get a refund?",
     },
-    "Test 3: Forgot password & can't log in (Account Help -> Resolved)": {
-        "name": "Carlos Gomez",
-        "order_id": "ORD-N/A",
+    "TC-3 · Forgot Password (Resolved)": {
+        "name": "Carlos Gomez", "order_id": "ORD-N/A",
         "complaint": "I forgot my password and can't log in.",
     },
-    "Test 4: Broken blender received (Product FAQ / Replacement -> Resolved)": {
-        "name": "Sarah Miller",
-        "order_id": "ORD-3309",
+    "TC-4 · Broken Blender (Resolved)": {
+        "name": "Sarah Miller", "order_id": "ORD-3309",
         "complaint": "The blender I received is broken. Can I get a replacement?",
     },
-    "Test 5: 3x card charge, angry, legal threat (Billing / Legal -> Escalated)": {
-        "name": "Robert Vance",
-        "order_id": "ORD-9901",
+    "TC-5 · Triple Charge + Legal Threat (Escalated)": {
+        "name": "Robert Vance", "order_id": "ORD-9901",
         "complaint": "You charged my card three times! Fix this now or I'm contacting my bank and a lawyer.",
     },
-    "Test 6: Custom corporate gift cards (Not in KB -> Escalated)": {
-        "name": "Evelyn Wright",
-        "order_id": "ORD-CORP",
+    "TC-6 · Custom Corporate Gift Cards (Escalated)": {
+        "name": "Evelyn Wright", "order_id": "ORD-CORP",
         "complaint": "Do you sell gift cards for a company of 500 employees with custom branding?",
     },
-    "Test 7 (Custom): Address modification within 1 hour (Shipping -> Resolved)": {
-        "name": "Daniel Craig",
-        "order_id": "ORD-7712",
+    "TC-7 · Address Change (Resolved)": {
+        "name": "Daniel Craig", "order_id": "ORD-7712",
         "complaint": "I just placed an order 20 minutes ago. How do I change my shipping address?",
     },
-    "Test 8 (Custom): Suspected account breach & fraudulent orders (Security -> Escalated)": {
-        "name": "Maya Patel",
-        "order_id": "ORD-UNKNOWN",
+    "TC-8 · Account Breach & Fraud (Escalated)": {
+        "name": "Maya Patel", "order_id": "ORD-UNKNOWN",
         "complaint": "I believe my account has been hacked and someone placed unauthorized orders with my saved card. Block my account immediately!",
     },
 }
 
+AGENT_META = {
+    "Query_Agent": {
+        "icon": "🔍", "css": "query",
+        "label": "Query Analyst",
+        "desc": "Extracted intent, urgency & sentiment",
+    },
+    "Knowledge_Agent": {
+        "icon": "📚", "css": "kb",
+        "label": "Knowledge Retriever",
+        "desc": "Searched ChromaDB vector store",
+    },
+    "Resolution_Agent": {
+        "icon": "✍️", "css": "resolve",
+        "label": "Resolution Drafter",
+        "desc": "Composed grounded customer reply",
+    },
+    "Log_Agent": {
+        "icon": "📋", "css": "log",
+        "label": "QA & Logger",
+        "desc": "Evaluated escalation rules & persisted ticket",
+    },
+}
 
+
+# ═══════════════════════════════════════════════════════════════════
+#  SESSION STATE INITIALISATION
+# ═══════════════════════════════════════════════════════════════════
+_DEFAULTS = {
+    "latest_result": None,
+    "latest_updates": [],
+    "is_processing": False,
+    "run_count": 0,
+}
+for _k, _v in _DEFAULTS.items():
+    if _k not in st.session_state:
+        st.session_state[_k] = _v
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  HELPERS
+# ═══════════════════════════════════════════════════════════════════
 def load_logs() -> pd.DataFrame:
-    """Load tickets from CSV file."""
+    """Load ticket CSV with graceful fallback."""
     if not LOG_FILE.exists():
         return pd.DataFrame(columns=CSV_COLUMNS)
     try:
         df = pd.read_csv(LOG_FILE)
+        if df.empty:
+            return pd.DataFrame(columns=CSV_COLUMNS)
         return df
     except Exception:
         return pd.DataFrame(columns=CSV_COLUMNS)
 
 
-# ---------------- SIDEBAR CONFIGURATION ----------------
-st.sidebar.title("⚙️ Support Desk Config")
+def render_kpi(value: str, label: str, accent: str = "blue") -> str:
+    """Return HTML for a single KPI metric card."""
+    return f"""
+    <div class="kpi-card kpi-accent-{accent}">
+        <div class="kpi-value">{value}</div>
+        <div class="kpi-label">{label}</div>
+    </div>"""
 
-env_info = get_available_provider()
-detected_provider = env_info.get("provider") or "openai"
 
-provider_choice = st.sidebar.selectbox(
-    "LLM Provider",
-    options=["OpenAI", "Google Gemini", "Groq", "Custom / Ollama"],
-    index=0 if detected_provider == "openai" else (1 if detected_provider == "gemini" else 2),
-)
+def render_agent_step(source: str, content: str) -> None:
+    """Render a single agent timeline step as a styled card."""
+    meta = AGENT_META.get(source, {"icon": "🤖", "css": "query", "label": source, "desc": ""})
+    st.markdown(f"""
+    <div class="agent-step">
+        <div class="agent-step-header">
+            <div class="agent-step-icon {meta['css']}">{meta['icon']}</div>
+            <div>
+                <div class="agent-step-name">{meta['label']}</div>
+                <div class="agent-step-role">{meta['desc']}</div>
+            </div>
+        </div>
+    </div>""", unsafe_allow_html=True)
+    st.code(content, language="markdown")
 
-default_key = env_info.get("api_key") or ""
-api_key_input = st.sidebar.text_input(
-    "API Key",
-    value=default_key,
-    type="password",
-    help="Loaded automatically from .env if present. You can also paste your key directly here.",
-)
 
-# Model selection based on provider
-if provider_choice == "Google Gemini":
-    default_model = "gemini-2.5-flash"
-    custom_model = st.sidebar.text_input("Model Name", value=default_model)
-    selected_provider_name = "gemini"
-    selected_base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
-elif provider_choice == "Groq":
-    default_model = "llama-3.3-70b-versatile"
-    custom_model = st.sidebar.text_input("Model Name", value=default_model)
-    selected_provider_name = "groq"
-    selected_base_url = "https://api.groq.com/openai/v1"
-elif provider_choice == "Custom / Ollama":
-    custom_model = st.sidebar.text_input("Model Name", value="llama3.1")
-    selected_provider_name = "custom"
-    selected_base_url = st.sidebar.text_input("Base URL", value="http://localhost:11434/v1")
-else:
-    default_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-    custom_model = st.sidebar.text_input("Model Name", value=default_model)
-    selected_provider_name = "openai"
-    selected_base_url = None
+# ═══════════════════════════════════════════════════════════════════
+#  SIDEBAR
+# ═══════════════════════════════════════════════════════════════════
+with st.sidebar:
+    st.markdown("""
+    <div style="text-align:center; padding: 0.5rem 0 1rem 0;">
+        <span style="font-size:2rem;">🛡️</span>
+        <div style="font-size:1.1rem; font-weight:800; margin-top:0.25rem; color:#f1f5f9;">
+            AI Support Desk
+        </div>
+        <div style="font-size:0.72rem; color:#64748b; margin-top:2px;">
+            AutoGen v0.4+ · ChromaDB · Streamlit
+        </div>
+    </div>""", unsafe_allow_html=True)
 
-if api_key_input:
-    st.sidebar.success(f"🔑 API Key connected ({provider_choice})")
-else:
-    st.sidebar.warning("⚠️ No API key set. Provide one above or in .env")
+    st.markdown("---")
 
-st.sidebar.markdown("---")
-st.sidebar.subheader("📚 Company Knowledge Base")
-with st.sidebar.expander("Inspect KB Documents"):
-    kb_files = list(KB_DIR.glob("*.md"))
-    for kf in kb_files:
-        st.write(f"📄 **{kf.name}**")
-        with st.expander(f"View content: {kf.name}", expanded=False):
-            st.code(kf.read_text(encoding="utf-8")[:400] + "...", language="markdown")
+    # ── Provider selection ──
+    st.markdown('<p style="font-size:0.72rem; color:#94a3b8 !important; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">LLM Provider</p>', unsafe_allow_html=True)
+    env_info = get_available_provider()
+    detected_provider = env_info.get("provider") or "openai"
 
-if st.sidebar.button("🗑️ Clear Ticket Logs"):
-    if LOG_FILE.exists():
-        pd.DataFrame(columns=CSV_COLUMNS).to_csv(LOG_FILE, index=False)
-        st.sidebar.success("Tickets log reset successfully!")
+    provider_map = {"OpenAI": "openai", "Google Gemini": "gemini", "Groq": "groq", "Custom / Ollama": "custom"}
+    reverse_map = {v: k for k, v in provider_map.items()}
+    provider_choice = st.selectbox(
+        "LLM Provider",
+        options=list(provider_map.keys()),
+        index=list(provider_map.values()).index(detected_provider) if detected_provider in provider_map.values() else 0,
+        label_visibility="collapsed",
+    )
+    selected_provider_name = provider_map[provider_choice]
+
+    # ── API key ──
+    default_key = env_info.get("api_key") or ""
+    api_key_input = st.text_input(
+        "API Key",
+        value=default_key,
+        type="password",
+        help="Auto-loaded from .env · Paste a key here to override",
+    )
+
+    # ── Model & base URL ──
+    model_defaults = {
+        "openai": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+        "gemini": "gemini-2.5-flash",
+        "groq": "llama-3.3-70b-versatile",
+        "custom": "llama3.1",
+    }
+    base_url_defaults = {
+        "openai": "",
+        "gemini": "https://generativelanguage.googleapis.com/v1beta/openai/",
+        "groq": "https://api.groq.com/openai/v1",
+        "custom": "http://localhost:11434/v1",
+    }
+    custom_model = st.text_input("Model", value=model_defaults.get(selected_provider_name, "gpt-4o-mini"))
+
+    if selected_provider_name == "custom":
+        selected_base_url = st.text_input("Base URL", value=base_url_defaults["custom"])
+    else:
+        selected_base_url = base_url_defaults.get(selected_provider_name) or None
+
+    # ── Connection status ──
+    if api_key_input and not api_key_input.startswith("your_"):
+        st.success(f"✅ Connected — {provider_choice}", icon="🔑")
+    else:
+        st.warning("API key required", icon="⚠️")
+
+    st.markdown("---")
+
+    # ── Knowledge base preview ──
+    st.markdown('<p style="font-size:0.72rem; color:#94a3b8 !important; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">Knowledge Base Documents</p>', unsafe_allow_html=True)
+    kb_files = sorted(KB_DIR.glob("*.md"))
+    if kb_files:
+        chips_html = "".join(f'<span class="kb-chip">📄 {f.name}</span>' for f in kb_files)
+        st.markdown(chips_html, unsafe_allow_html=True)
+        with st.expander("Inspect KB Contents"):
+            for kf in kb_files:
+                st.caption(f"**{kf.name}**")
+                st.code(kf.read_text(encoding="utf-8")[:350] + "\n…", language="markdown")
+
+    st.markdown("---")
+
+    # ── Quick stats from CSV ──
+    _df = load_logs()
+    _total = len(_df)
+    st.markdown('<p style="font-size:0.72rem; color:#94a3b8 !important; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Session Stats</p>', unsafe_allow_html=True)
+    _resolved = len(_df[_df["status"] == "Resolved"]) if _total else 0
+    _escalated = len(_df[_df["status"] == "Escalated"]) if _total else 0
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Total", _total)
+    c2.metric("✅", _resolved)
+    c3.metric("🚨", _escalated)
+
+    if st.button("🗑️  Clear Logs", use_container_width=True):
+        if LOG_FILE.exists():
+            pd.DataFrame(columns=CSV_COLUMNS).to_csv(LOG_FILE, index=False)
         st.rerun()
 
 
-# ---------------- MAIN APPLICATION ----------------
-st.title("🎧 AI Customer Support Automation Desk")
-st.caption("Multi-Agent Support Orchestration powered by AutoGen v0.4+ and ChromaDB Vector RAG")
+# ═══════════════════════════════════════════════════════════════════
+#  HERO BANNER
+# ═══════════════════════════════════════════════════════════════════
+st.markdown("""
+<div class="hero-banner">
+    <h1>🛡️ AI Customer Support Desk</h1>
+    <p>Multi-agent orchestration with AutoGen v0.4+ · ChromaDB vector RAG · Real-time analytics</p>
+</div>""", unsafe_allow_html=True)
 
-tab_console, tab_logs = st.tabs(["💬 Support Console", "📊 Analytics & Ticket Logs"])
 
-# ---------------- TAB 1: SUPPORT CONSOLE ----------------
+# ═══════════════════════════════════════════════════════════════════
+#  TABS
+# ═══════════════════════════════════════════════════════════════════
+tab_console, tab_analytics, tab_logs = st.tabs([
+    "💬  Support Console",
+    "📊  Analytics Dashboard",
+    "📋  Ticket History",
+])
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  TAB 1 — SUPPORT CONSOLE
+# ═══════════════════════════════════════════════════════════════════
 with tab_console:
-    col_input, col_status = st.columns([1, 1], gap="large")
+    col_form, col_result = st.columns([5, 7], gap="large")
 
-    with col_input:
-        st.subheader("📝 New Customer Complaint")
+    # ── LEFT: Complaint Form ──────────────────────────────
+    with col_form:
+        st.markdown('<div class="section-title">📝 New Customer Complaint</div>', unsafe_allow_html=True)
 
-        # Test case selector
-        selected_case = st.selectbox(
-            "Quick-Fill Assignment Test Cases",
-            options=list(TEST_CASES.keys()),
-        )
+        with st.container(border=True):
+            selected_case = st.selectbox(
+                "Quick-fill test cases",
+                options=list(TEST_CASES.keys()),
+                key="test_case_select",
+            )
+            preset = TEST_CASES.get(selected_case)
+            _dn = preset["name"] if preset else "Priya Sharma"
+            _do = preset["order_id"] if preset else "ORD-4512"
+            _dc = preset["complaint"] if preset else ""
 
-        preset_data = TEST_CASES.get(selected_case)
-        default_customer = preset_data["name"] if preset_data else "Priya Sharma"
-        default_order = preset_data["order_id"] if preset_data else "ORD-4512"
-        default_complaint = preset_data["complaint"] if preset_data else ""
+            c_name, c_order = st.columns(2)
+            with c_name:
+                customer_name = st.text_input("Customer Name", value=_dn, key="inp_name")
+            with c_order:
+                order_id = st.text_input("Order ID", value=_do, key="inp_order")
 
-        col_c1, col_c2 = st.columns(2)
-        with col_c1:
-            customer_name = st.text_input("Customer Name", value=default_customer)
-        with col_c2:
-            order_id = st.text_input("Order ID", value=default_order)
+            complaint_text = st.text_area(
+                "Complaint / Question",
+                value=_dc,
+                height=125,
+                placeholder="Describe the issue — late shipment, broken product, billing dispute …",
+                key="inp_complaint",
+            )
 
-        complaint_text = st.text_area(
-            "Customer Complaint / Question",
-            value=default_complaint,
-            height=140,
-            placeholder="Describe the issue, late shipment, return request, or query...",
-        )
+            submit = st.button(
+                "🚀  Process with AI Agents",
+                type="primary",
+                use_container_width=True,
+                disabled=st.session_state.get("is_processing", False),
+            )
 
-        submit_btn = st.button("🚀 Process Complaint with Agents", type="primary", use_container_width=True)
+    # ── RIGHT: Agent Execution & Results ──────────────────
+    with col_result:
+        st.markdown('<div class="section-title">🤖 Multi-Agent Workflow</div>', unsafe_allow_html=True)
 
-    with col_status:
-        st.subheader("🤖 Live Multi-Agent Workflow")
-
-        if submit_btn:
+        # ── Handle new submission ──
+        if submit:
             if not complaint_text.strip():
-                st.error("Please enter a customer complaint before submitting.")
-            elif not api_key_input.strip():
-                st.error("Please configure an API Key in the sidebar or in your .env file to run the AI agents.")
+                st.error("Please enter a customer complaint before submitting.", icon="⚠️")
+            elif not api_key_input or api_key_input.startswith("your_"):
+                st.error("Configure a valid API key in the sidebar (or .env file) to run AI agents.", icon="🔑")
             else:
-                progress_container = st.container()
-                with progress_container:
-                    status_widget = st.status("Initializing AutoGen Multi-Agent Team...", expanded=True)
+                st.session_state["is_processing"] = True
+                st.session_state["latest_result"] = None
+                st.session_state["latest_updates"] = []
 
+                with st.status("Initializing AutoGen multi-agent team …", expanded=True) as status_widget:
                     try:
                         client = get_model_client(
                             api_key=api_key_input,
@@ -241,9 +541,9 @@ with tab_console:
                             base_url=selected_base_url,
                         )
 
-                        workflow_state = {"final_data": None, "updates": []}
+                        workflow_state: Dict[str, Any] = {"final_data": None, "updates": []}
 
-                        async def run_workflow():
+                        async def _run():
                             async for event in process_complaint_stream(
                                 complaint=complaint_text,
                                 customer_name=customer_name,
@@ -252,124 +552,231 @@ with tab_console:
                             ):
                                 if event["type"] == "agent_message":
                                     src = event["source"]
-                                    cnt = event["content"]
-                                    workflow_state["updates"].append((src, cnt))
-                                    if src == "Query_Agent":
-                                        status_widget.write("🔍 **Query Agent**: Extracted Category, Urgency, and Sentiment.")
-                                    elif src == "Knowledge_Agent":
-                                        status_widget.write("📚 **Knowledge Agent**: Searched ChromaDB knowledge base.")
-                                    elif src == "Resolution_Agent":
-                                        status_widget.write("✍️ **Resolution Agent**: Drafted grounded customer resolution.")
-                                    elif src == "Log_Agent":
-                                        status_widget.write("📋 **Log Agent**: Evaluated escalation rules and persisted to CSV.")
+                                    meta = AGENT_META.get(src, {})
+                                    workflow_state["updates"].append((src, event["content"]))
+                                    status_widget.write(
+                                        f"{meta.get('icon', '🤖')}  **{meta.get('label', src)}** — {meta.get('desc', 'Processing …')}"
+                                    )
                                 elif event["type"] == "final_result":
                                     workflow_state["final_data"] = event["result"]
 
-                        # Execute async loop
-                        asyncio.run(run_workflow())
-                        status_widget.update(label="✅ Workflow Execution Complete!", state="complete", expanded=False)
+                        asyncio.run(_run())
 
+                        status_widget.update(label="✅  Workflow complete", state="complete", expanded=False)
                         st.session_state["latest_result"] = workflow_state["final_data"]
                         st.session_state["latest_updates"] = workflow_state["updates"]
+                        st.session_state["run_count"] = st.session_state.get("run_count", 0) + 1
 
-                    except Exception as e:
-                        status_widget.update(label="❌ Execution Failed", state="error", expanded=True)
-                        st.error(f"Error during agent execution: {str(e)}")
+                    except Exception as exc:
+                        status_widget.update(label="❌  Execution failed", state="error", expanded=True)
+                        error_msg = str(exc)
+                        if "rate" in error_msg.lower() or "limit" in error_msg.lower():
+                            st.error("**Rate-limit hit.** Wait a moment and try again, or switch to a different LLM provider in the sidebar.", icon="⏳")
+                        elif "auth" in error_msg.lower() or "key" in error_msg.lower() or "401" in error_msg:
+                            st.error("**Authentication error.** Double-check your API key in the sidebar.", icon="🔑")
+                        else:
+                            st.error(f"**Agent error:** {error_msg}", icon="🚨")
+                    finally:
+                        st.session_state["is_processing"] = False
 
-        # Display latest result if stored in session state
-        if "latest_result" in st.session_state and st.session_state["latest_result"]:
-            res = st.session_state["latest_result"]
+        # ── Display persisted result (survives re-runs) ──
+        res = st.session_state.get("latest_result")
+        if res:
+            is_esc = res["status"].lower() == "escalated"
 
-            # Visual status badge
-            is_escalated = res["status"].lower() == "escalated"
-            if is_escalated:
-                badge_html = f'<div class="badge-escalated">🚨 ESCALATED (Handed to Human Support)</div>'
+            # Status pill
+            if is_esc:
+                st.markdown(
+                    '<div class="pill pill-escalated"><span class="pill-icon">🚨</span> ESCALATED — Forwarded to Human Agent</div>',
+                    unsafe_allow_html=True,
+                )
             else:
-                badge_html = f'<div class="badge-resolved">✅ RESOLVED (Handled by AI Support)</div>'
+                st.markdown(
+                    '<div class="pill pill-resolved"><span class="pill-icon">✅</span> RESOLVED — Handled by AI Support</div>',
+                    unsafe_allow_html=True,
+                )
 
-            st.markdown(badge_html, unsafe_allow_html=True)
+            st.markdown("")  # spacer
 
-            st.markdown("### 💬 Proposed Customer Response")
-            if is_escalated:
-                st.warning(res["response"])
-            else:
-                st.success(res["response"])
+            # Customer complaint echo
+            st.markdown(f'<div class="complaint-quote">"{res["complaint"]}"</div>', unsafe_allow_html=True)
 
-            # Metadata details
-            with st.expander("📌 Ticket Breakdown & Escalation Details", expanded=True):
-                mcol1, mcol2, mcol3, mcol4 = st.columns(4)
-                mcol1.metric("Ticket ID", res.get("ticket_id", "N/A"))
-                mcol2.metric("Category", res.get("category", "General"))
-                mcol3.metric("Urgency", res.get("urgency", "Low"))
-                mcol4.metric("Sentiment", res.get("sentiment", "Neutral"))
+            # Proposed response
+            st.markdown('<div class="section-title">💬 Proposed Customer Response</div>', unsafe_allow_html=True)
+            css_cls = "escalated" if is_esc else "resolved"
+            st.markdown(f'<div class="response-card {css_cls}">{res["response"]}</div>', unsafe_allow_html=True)
 
-                st.write(f"**Knowledge Sources Consulted**: `{res.get('kb_sources', 'None')}`")
-                st.write(f"**Resolution Confidence**: `{res.get('confidence', 'High')}`")
-                if is_escalated:
-                    st.error(f"**Escalation Reason**: {res.get('escalation_reason', 'None')}")
+            # Detail grid
+            urg_color = {"high": "#dc2626", "medium": "#d97706", "low": "#16a34a"}.get(res["urgency"].lower(), "#64748b")
+            sent_color = {"very angry": "#dc2626", "angry": "#ef4444", "frustrated": "#f59e0b", "neutral": "#64748b", "calm": "#16a34a"}.get(res["sentiment"].lower(), "#64748b")
+            conf_color = "#16a34a" if res["confidence"].lower() == "high" else "#dc2626"
 
-            # Expandable timeline of individual agent messages
-            if "latest_updates" in st.session_state and st.session_state["latest_updates"]:
-                with st.expander("🕵️ Inspect Step-by-Step Agent Outputs", expanded=False):
-                    for src, cnt in st.session_state["latest_updates"]:
-                        st.markdown(f"**🤖 {src}:**")
-                        st.code(cnt, language="markdown")
+            st.markdown(f"""
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="label">Ticket ID</div>
+                    <div class="value">{res.get("ticket_id", "N/A")}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Category</div>
+                    <div class="value">{res.get("category", "General")}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Urgency</div>
+                    <div class="value" style="color:{urg_color}">{res.get("urgency", "Low")}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Sentiment</div>
+                    <div class="value" style="color:{sent_color}">{res.get("sentiment", "Neutral")}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Confidence</div>
+                    <div class="value" style="color:{conf_color}">{res.get("confidence", "High")}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">KB Sources</div>
+                    <div class="value" style="font-size:0.82rem">{res.get("kb_sources", "None")}</div>
+                </div>
+            </div>""", unsafe_allow_html=True)
+
+            # Escalation reason callout
+            if is_esc and res.get("escalation_reason", "None") != "None":
+                st.error(f"**Escalation Reason:** {res['escalation_reason']}", icon="🚨")
+
+            # Agent thought-process timeline
+            updates: List[Tuple[str, str]] = st.session_state.get("latest_updates", [])
+            if updates:
+                with st.expander("🕵️  Inspect Agent Step-by-Step Outputs", expanded=False):
+                    for src, cnt in updates:
+                        render_agent_step(src, cnt)
+        else:
+            # Empty state
+            st.markdown("""
+            <div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">
+                <div style="font-size:3rem; margin-bottom:0.5rem;">🤖</div>
+                <div style="font-size:1rem; font-weight:600; color:#64748b;">No active workflow</div>
+                <div style="font-size:0.85rem; margin-top:0.3rem;">
+                    Fill out a complaint on the left and click <b>Process with AI Agents</b> to begin.
+                </div>
+            </div>""", unsafe_allow_html=True)
 
 
-# ---------------- TAB 2: ANALYTICS & TICKET LOGS ----------------
+# ═══════════════════════════════════════════════════════════════════
+#  TAB 2 — ANALYTICS DASHBOARD
+# ═══════════════════════════════════════════════════════════════════
+with tab_analytics:
+    df_all = load_logs()
+    total = len(df_all)
+
+    if total == 0:
+        st.info("No tickets logged yet. Process a complaint in the **Support Console** tab to see analytics here.", icon="📊")
+    else:
+        resolved = len(df_all[df_all["status"] == "Resolved"])
+        escalated = len(df_all[df_all["status"] == "Escalated"])
+        high_urg = len(df_all[df_all["urgency"] == "High"]) if "urgency" in df_all.columns else 0
+        res_rate = f"{resolved / total * 100:.0f}%" if total else "—"
+
+        # ── KPI row ──
+        k1, k2, k3, k4 = st.columns(4)
+        with k1:
+            st.markdown(render_kpi(str(total), "Total Tickets", "blue"), unsafe_allow_html=True)
+        with k2:
+            st.markdown(render_kpi(f"{resolved}  ({res_rate})", "Resolved", "green"), unsafe_allow_html=True)
+        with k3:
+            st.markdown(render_kpi(str(escalated), "Escalated", "red"), unsafe_allow_html=True)
+        with k4:
+            st.markdown(render_kpi(str(high_urg), "High Urgency", "amber"), unsafe_allow_html=True)
+
+        st.markdown("")  # spacer
+
+        # ── Charts ──
+        ch1, ch2 = st.columns(2)
+        with ch1:
+            with st.container(border=True):
+                st.markdown("##### Tickets by Category")
+                if "category" in df_all.columns:
+                    cat_counts = df_all["category"].value_counts()
+                    st.bar_chart(cat_counts, color="#6366f1")
+        with ch2:
+            with st.container(border=True):
+                st.markdown("##### Resolution Outcome")
+                status_counts = df_all["status"].value_counts()
+                st.bar_chart(status_counts, color="#6366f1")
+
+        # ── Extra row: sentiment & urgency ──
+        ch3, ch4 = st.columns(2)
+        with ch3:
+            with st.container(border=True):
+                st.markdown("##### Customer Sentiment")
+                if "sentiment" in df_all.columns:
+                    sent_counts = df_all["sentiment"].value_counts()
+                    st.bar_chart(sent_counts, color="#f59e0b")
+        with ch4:
+            with st.container(border=True):
+                st.markdown("##### Urgency Distribution")
+                if "urgency" in df_all.columns:
+                    urg_counts = df_all["urgency"].value_counts()
+                    st.bar_chart(urg_counts, color="#ef4444")
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  TAB 3 — TICKET HISTORY
+# ═══════════════════════════════════════════════════════════════════
 with tab_logs:
-    st.subheader("📊 Support Performance & Ticket Logs")
-
     df_logs = load_logs()
 
-    # Metric summary cards
-    total_tickets = len(df_logs)
-    if total_tickets > 0:
-        resolved_count = len(df_logs[df_logs["status"] == "Resolved"])
-        escalated_count = len(df_logs[df_logs["status"] == "Escalated"])
-        high_urgency_count = len(df_logs[df_logs["urgency"] == "High"])
+    st.markdown('<div class="section-title">📋 Ticket Log Database</div>', unsafe_allow_html=True)
 
-        m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Total Tickets", total_tickets)
-        m2.metric("Resolved", f"{resolved_count} ({resolved_count/total_tickets*100:.0f}%)")
-        m3.metric("Escalated", f"{escalated_count} ({escalated_count/total_tickets*100:.0f}%)")
-        m4.metric("High Urgency", high_urgency_count)
-
-        # Charts row
-        chart_col1, chart_col2 = st.columns(2)
-        with chart_col1:
-            st.markdown("##### Tickets by Category")
-            if "category" in df_logs.columns and not df_logs["category"].empty:
-                cat_counts = df_logs["category"].value_counts()
-                st.bar_chart(cat_counts)
-        with chart_col2:
-            st.markdown("##### Resolved vs Escalated")
-            status_counts = df_logs["status"].value_counts()
-            st.bar_chart(status_counts)
+    if df_logs.empty:
+        st.info("No tickets recorded yet. Submit a complaint to populate the log.", icon="📋")
     else:
-        st.info("No tickets logged yet. Submit a complaint in the Support Console to populate logs!")
+        # ── Filters ──
+        with st.container(border=True):
+            f1, f2, f3, _spacer = st.columns([1, 1, 1, 3])
+            with f1:
+                status_filter = st.selectbox("Status", ["All", "Resolved", "Escalated"], key="log_status_filter")
+            with f2:
+                cat_options = ["All"] + sorted(df_logs["category"].dropna().unique().tolist()) if "category" in df_logs.columns else ["All"]
+                cat_filter = st.selectbox("Category", cat_options, key="log_cat_filter")
+            with f3:
+                urg_options = ["All", "Low", "Medium", "High"]
+                urg_filter = st.selectbox("Urgency", urg_options, key="log_urg_filter")
 
-    st.markdown("---")
-    st.subheader("📋 Ticket Log Database (`tickets.csv`)")
+        filtered = df_logs.copy()
+        if status_filter != "All":
+            filtered = filtered[filtered["status"] == status_filter]
+        if cat_filter != "All" and "category" in filtered.columns:
+            filtered = filtered[filtered["category"] == cat_filter]
+        if urg_filter != "All" and "urgency" in filtered.columns:
+            filtered = filtered[filtered["urgency"] == urg_filter]
 
-    # Filter options
-    filter_col1, filter_col2 = st.columns([1, 3])
-    with filter_col1:
-        status_filter = st.selectbox("Filter by Status", options=["All", "Resolved", "Escalated"])
+        # ── Display columns (hide internal-only duplicates) ──
+        display_cols = [c for c in filtered.columns if c not in ("category", "urgency", "sentiment")]
 
-    filtered_df = df_logs
-    if status_filter != "All":
-        filtered_df = df_logs[df_logs["status"] == status_filter]
-
-    # Display dataframe
-    st.dataframe(filtered_df, use_container_width=True)
-
-    # Download button
-    if not df_logs.empty:
-        csv_data = df_logs.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            label="📥 Download Ticket Log (CSV)",
-            data=csv_data,
-            file_name="tickets.csv",
-            mime="text/csv",
+        st.dataframe(
+            filtered[display_cols],
+            use_container_width=True,
+            column_config={
+                "ticket_id": st.column_config.TextColumn("Ticket ID", width="small"),
+                "timestamp": st.column_config.TextColumn("Timestamp", width="medium"),
+                "customer_name / order_id": st.column_config.TextColumn("Customer · Order", width="medium"),
+                "complaint": st.column_config.TextColumn("Complaint", width="large"),
+                "category · urgency · sentiment": st.column_config.TextColumn("Classification", width="medium"),
+                "kb_sources": st.column_config.TextColumn("KB Sources", width="medium"),
+                "response": st.column_config.TextColumn("Response", width="large"),
+                "status": st.column_config.TextColumn("Status", width="small"),
+                "escalation_reason": st.column_config.TextColumn("Escalation Reason", width="medium"),
+            },
         )
+
+        st.markdown("")
+        dl1, dl2 = st.columns([1, 5])
+        with dl1:
+            csv_bytes = df_logs.to_csv(index=False).encode("utf-8")
+            st.download_button(
+                "📥  Download CSV",
+                data=csv_bytes,
+                file_name=f"tickets_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                mime="text/csv",
+                use_container_width=True,
+            )
