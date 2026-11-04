@@ -4,8 +4,12 @@ import re
 import logging
 from typing import AsyncGenerator, Dict, Any, Optional
 from autogen_agentchat.teams import RoundRobinGroupChat
-from autogen_agentchat.conditions import TextMentionTermination, MaxMessageTermination
-from autogen_agentchat.messages import TextMessage, BaseChatMessage
+from autogen_agentchat.conditions import (
+    SourceMatchTermination,
+    TextMentionTermination,
+    MaxMessageTermination,
+)
+from autogen_agentchat.messages import TextMessage, ToolCallSummaryMessage, BaseChatMessage
 from autogen_core.models import ChatCompletionClient
 
 from agents.query_agent import create_query_agent
@@ -19,19 +23,23 @@ logger = logging.getLogger(__name__)
 
 def create_support_team(
     model_client: ChatCompletionClient,
-    max_turns: int = 12,
+    max_turns: int = 8,
 ) -> RoundRobinGroupChat:
     """Creates and configures the AutoGen customer support team.
 
     Sequence: Query_Agent -> Knowledge_Agent -> Resolution_Agent -> Log_Agent
-    Terminates when Log_Agent outputs 'LOGGED' or max messages exceeded.
+    Terminates when Log_Agent completes or emits 'LOGGED'.
     """
     query_agent = create_query_agent(model_client)
     knowledge_agent = create_knowledge_agent(model_client)
     resolution_agent = create_resolution_agent(model_client)
     log_agent = create_log_agent(model_client)
 
-    termination = TextMentionTermination("LOGGED") | MaxMessageTermination(max_messages=max_turns)
+    termination = (
+        SourceMatchTermination(sources=["Log_Agent"])
+        | TextMentionTermination("LOGGED")
+        | MaxMessageTermination(max_messages=max_turns)
+    )
 
     team = RoundRobinGroupChat(
         participants=[query_agent, knowledge_agent, resolution_agent, log_agent],
@@ -194,12 +202,19 @@ async def process_complaint_stream(
     collected_messages = []
 
     async for item in team.run_stream(task=prompt):
-        if isinstance(item, TextMessage):
+        src = getattr(item, "source", None)
+        cnt = getattr(item, "content", "")
+        if isinstance(item, (TextMessage, ToolCallSummaryMessage)) and src in [
+            "Query_Agent",
+            "Knowledge_Agent",
+            "Resolution_Agent",
+            "Log_Agent",
+        ]:
             collected_messages.append(item)
             yield {
                 "type": "agent_message",
-                "source": item.source,
-                "content": item.content,
+                "source": src,
+                "content": cnt if isinstance(cnt, str) else str(cnt),
             }
 
     parsed = parse_agent_outputs(collected_messages, customer_info, complaint)
@@ -245,7 +260,11 @@ async def process_complaint(
     )
 
     task_result = await team.run(task=prompt)
-    messages = [msg for msg in task_result.messages if isinstance(msg, TextMessage)]
+    messages = [
+        msg
+        for msg in task_result.messages
+        if isinstance(msg, (TextMessage, ToolCallSummaryMessage))
+    ]
     parsed = parse_agent_outputs(messages, customer_info, complaint)
 
     # Ensure logged to CSV

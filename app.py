@@ -747,7 +747,6 @@ with tab_console:
                 "🚀  Process with AI Agents",
                 type="primary",
                 use_container_width=True,
-                disabled=st.session_state.get("is_processing", False),
             )
 
     # ── RIGHT: Agent Execution & Results ──────────────────
