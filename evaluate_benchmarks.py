@@ -21,7 +21,6 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from tools.kb_search import search_kb
-from tools.ticket_logger import log_ticket, get_next_ticket_id
 from core.team import parse_agent_outputs
 from core.config import LOGS_DIR
 

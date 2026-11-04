@@ -1,7 +1,7 @@
 """State definitions and Pydantic models for the multi-agent system."""
 
 from datetime import datetime
-from typing import List, Literal, Optional
+from typing import List, Literal
 from pydantic import BaseModel, Field
 
 

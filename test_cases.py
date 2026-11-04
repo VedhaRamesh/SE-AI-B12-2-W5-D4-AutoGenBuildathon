@@ -4,13 +4,11 @@ Tests knowledge base retrieval, escalation rule guardrails, ticket logging,
 and multi-agent parsing against all 6 assignment test cases plus 2 custom cases.
 """
 
-import sys
 import unittest
 import pandas as pd
-from pathlib import Path
 
 from tools.kb_search import search_kb
-from tools.ticket_logger import log_ticket, get_next_ticket_id, CSV_COLUMNS
+from tools.ticket_logger import log_ticket, get_next_ticket_id
 from core.team import parse_agent_outputs
 from core.config import LOG_FILE
 

@@ -9,7 +9,7 @@ from autogen_agentchat.conditions import (
     TextMentionTermination,
     MaxMessageTermination,
 )
-from autogen_agentchat.messages import TextMessage, ToolCallSummaryMessage, BaseChatMessage
+from autogen_agentchat.messages import TextMessage, ToolCallSummaryMessage
 from autogen_core.models import ChatCompletionClient
 
 from agents.query_agent import create_query_agent

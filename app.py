@@ -10,7 +10,6 @@ import os
 import re
 import time
 from datetime import datetime
-from pathlib import Path
 from typing import Dict, Any, List, Tuple
 
 import pandas as pd
@@ -85,29 +84,6 @@ section[data-testid="stSidebar"] .stButton > button:hover { background: #475569;
 .kpi-accent-red    .kpi-value { color: #dc2626; }
 .kpi-accent-amber  .kpi-value { color: #d97706; }
 
-/* ── Status badges / pills ─────────────────────────────── */
-.pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 18px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 0.88rem;
-    letter-spacing: 0.02em;
-}
-.pill-resolved {
-    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-    color: #166534;
-    border: 1px solid #86efac;
-}
-.pill-escalated {
-    background: linear-gradient(135deg, #fee2e2, #fecaca);
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-}
-.pill-icon { font-size: 1.05rem; }
-
 /* ── Agent timeline step card ──────────────────────────── */
 .agent-step {
     background: #f8fafc;
@@ -141,86 +117,6 @@ section[data-testid="stSidebar"] .stButton > button:hover { background: #475569;
 .agent-step-icon.log      { background: #d1fae5; }
 .agent-step-name  { font-weight: 700; font-size: 0.88rem; color: #1e293b; }
 .agent-step-role  { font-size: 0.78rem; color: #64748b; }
-
-/* ── Response card ─────────────────────────────────────── */
-.response-card {
-    border-radius: 12px;
-    padding: 1.25rem 1.5rem;
-    margin: 0.75rem 0;
-    font-size: 0.95rem;
-    line-height: 1.7;
-    white-space: pre-wrap;
-    position: relative;
-}
-.response-card.resolved {
-    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-    border: 1px solid #86efac;
-    color: #14532d;
-}
-.response-card.escalated {
-    background: linear-gradient(135deg, #fef2f2, #fff1f2);
-    border: 1px solid #fca5a5;
-    color: #7f1d1d;
-}
-
-/* ── Detail grid ───────────────────────────────────────── */
-.detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    margin: 1rem 0;
-}
-.detail-item {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 0.85rem 1rem;
-    text-align: center;
-}
-.detail-item .label { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; }
-.detail-item .value { font-size: 1rem; font-weight: 700; color: #1e293b; margin-top: 2px; }
-
-/* ── Complaint quote ───────────────────────────────────── */
-.complaint-quote {
-    background: #f1f5f9;
-    border-left: 4px solid #6366f1;
-    border-radius: 0 10px 10px 0;
-    padding: 1rem 1.25rem;
-    font-style: italic;
-    color: #334155;
-    margin: 0.75rem 0;
-    font-size: 0.92rem;
-    line-height: 1.6;
-}
-
-.customer-meta-tag {
-    font-size: 0.84rem;
-    color: #64748b;
-    margin-top: 0.75rem;
-    margin-bottom: 0.35rem;
-}
-
-.response-box-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin-top: 1.25rem;
-    margin-bottom: 0.35rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.escalation-alert-card {
-    background: #fef2f2;
-    border: 1px solid #fca5a5;
-    border-radius: 10px;
-    padding: 0.85rem 1.15rem;
-    color: #991b1b;
-    font-weight: 600;
-    font-size: 0.92rem;
-    margin-top: 1rem;
-}
 
 /* ── Section titles ────────────────────────────────────── */
 .section-title {

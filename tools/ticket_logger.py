@@ -4,7 +4,6 @@ import csv
 import logging
 import threading
 from datetime import datetime
-from pathlib import Path
 from typing import Optional
 import pandas as pd
 
