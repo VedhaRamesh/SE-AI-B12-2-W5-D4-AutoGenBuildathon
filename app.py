@@ -234,6 +234,147 @@ button[kind="primary"]:hover {
     transform: translateY(-1px) !important;
     box-shadow: 0 6px 20px rgba(99,102,241,0.35) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   VERTICAL STEP-BY-STEP CONNECTED WORKFLOW (DOTS & LINE)
+   ═══════════════════════════════════════════════════════════ */
+.workflow-tree {
+    position: relative;
+    padding-left: 8px;
+    margin: 1rem 0;
+}
+
+.tree-node {
+    position: relative;
+    padding-bottom: 1.5rem;
+    padding-left: 2.4rem;
+}
+
+.tree-node:last-child {
+    padding-bottom: 0.25rem;
+}
+
+/* Continuous connecting line between dots */
+.tree-node::before {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 30px;
+    bottom: -6px;
+    width: 3px;
+    background: #e2e8f0;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Line turns bright green when step is completed */
+.tree-node.completed::before {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.tree-node:last-child::before {
+    display: none;
+}
+
+/* Node indicator circle */
+.tree-dot {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+/* Pending State */
+.tree-node.pending .tree-dot {
+    background: #f1f5f9;
+    border: 2px solid #cbd5e1;
+    color: #94a3b8;
+}
+
+/* Active / Running State (Pulsing blue/indigo) */
+.tree-node.active .tree-dot {
+    background: #6366f1;
+    border: 3px solid #c7d2fe;
+    color: #ffffff;
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+    animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+}
+
+/* Completed State (Vibrant emerald green with checkmark) */
+.tree-node.completed .tree-dot {
+    background: #10b981;
+    border: 2px solid #059669;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Step Content Card */
+.tree-content {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.85rem 1.15rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+}
+
+.tree-node.active .tree-content {
+    border-color: #a5b4fc;
+    background: #f8faff;
+}
+
+.tree-node.completed .tree-content {
+    border-color: #bbf7d0;
+}
+
+.tree-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tree-title {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tree-desc {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.tree-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.tree-node.pending .tree-badge { background: #f1f5f9; color: #94a3b8; }
+.tree-node.active .tree-badge  { background: #ede9fe; color: #4f46e5; }
+.tree-node.completed .tree-badge { background: #dcfce7; color: #15803d; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -318,6 +459,71 @@ for _k, _v in _DEFAULTS.items():
 # ═══════════════════════════════════════════════════════════════════
 #  HELPERS
 # ═══════════════════════════════════════════════════════════════════
+WORKFLOW_STEPS = [
+    {
+        "key": "Query_Agent",
+        "icon": "🔍",
+        "title": "Query Analyst",
+        "desc": "Extracts customer intent, urgency level & emotional sentiment",
+    },
+    {
+        "key": "Knowledge_Agent",
+        "icon": "📚",
+        "title": "Knowledge Retriever",
+        "desc": "Executes semantic RAG search across ChromaDB vector store",
+    },
+    {
+        "key": "Resolution_Agent",
+        "icon": "✍️",
+        "title": "Resolution Drafter",
+        "desc": "Drafts grounded reply strictly matching company policy facts",
+    },
+    {
+        "key": "Log_Agent",
+        "icon": "📋",
+        "title": "QA & Auditor",
+        "desc": "Evaluates 5 escalation criteria & records ticket to CSV",
+    },
+]
+
+
+def render_connected_workflow(active_agent_key: str = None, completed_keys: list = None) -> str:
+    """Generates connected vertical tree HTML with animated dots and green connecting lines."""
+    completed_keys = completed_keys or []
+    html = ['<div class="workflow-tree">']
+
+    for idx, step in enumerate(WORKFLOW_STEPS, 1):
+        key = step["key"]
+        if key in completed_keys:
+            state = "completed"
+            dot_content = "✓"
+            badge = "Completed"
+        elif key == active_agent_key:
+            state = "active"
+            dot_content = f"{idx}"
+            badge = "Active"
+        else:
+            state = "pending"
+            dot_content = f"{idx}"
+            badge = "Pending"
+
+        html.append(f"""
+        <div class="tree-node {state}">
+            <div class="tree-dot">{dot_content}</div>
+            <div class="tree-content">
+                <div class="tree-header">
+                    <div class="tree-title">{step['icon']} {step['title']}</div>
+                    <span class="tree-badge">{badge}</span>
+                </div>
+                <div class="tree-desc">{step['desc']}</div>
+            </div>
+        </div>
+        """)
+
+    html.append('</div>')
+    return "".join(html)
+
+
 def load_logs() -> pd.DataFrame:
     """Load ticket CSV with graceful fallback."""
     if not LOG_FILE.exists():
@@ -532,52 +738,82 @@ with tab_console:
                 st.session_state["latest_result"] = None
                 st.session_state["latest_updates"] = []
 
-                with st.status("Initializing AutoGen multi-agent team …", expanded=True) as status_widget:
-                    try:
-                        client = get_model_client(
-                            api_key=api_key_input,
-                            model=custom_model,
-                            provider=selected_provider_name,
-                            base_url=selected_base_url,
-                        )
+                # Dynamic step-by-step tree placeholder
+                tree_placeholder = st.empty()
+                completed_agents = []
 
-                        workflow_state: Dict[str, Any] = {"final_data": None, "updates": []}
+                # Step 1 (Query Agent) starts as active
+                tree_placeholder.markdown(
+                    render_connected_workflow(active_agent_key="Query_Agent", completed_keys=[]),
+                    unsafe_allow_html=True,
+                )
 
-                        async def _run():
-                            async for event in process_complaint_stream(
-                                complaint=complaint_text,
-                                customer_name=customer_name,
-                                order_id=order_id,
-                                model_client=client,
-                            ):
-                                if event["type"] == "agent_message":
-                                    src = event["source"]
-                                    meta = AGENT_META.get(src, {})
-                                    workflow_state["updates"].append((src, event["content"]))
-                                    status_widget.write(
-                                        f"{meta.get('icon', '🤖')}  **{meta.get('label', src)}** — {meta.get('desc', 'Processing …')}"
-                                    )
-                                elif event["type"] == "final_result":
-                                    workflow_state["final_data"] = event["result"]
+                try:
+                    client = get_model_client(
+                        api_key=api_key_input,
+                        model=custom_model,
+                        provider=selected_provider_name,
+                        base_url=selected_base_url,
+                    )
 
-                        asyncio.run(_run())
+                    workflow_state: Dict[str, Any] = {"final_data": None, "updates": []}
 
-                        status_widget.update(label="✅  Workflow complete", state="complete", expanded=False)
-                        st.session_state["latest_result"] = workflow_state["final_data"]
-                        st.session_state["latest_updates"] = workflow_state["updates"]
-                        st.session_state["run_count"] = st.session_state.get("run_count", 0) + 1
+                    next_agent_lookup = {
+                        "Query_Agent": "Knowledge_Agent",
+                        "Knowledge_Agent": "Resolution_Agent",
+                        "Resolution_Agent": "Log_Agent",
+                        "Log_Agent": None,
+                    }
 
-                    except Exception as exc:
-                        status_widget.update(label="❌  Execution failed", state="error", expanded=True)
-                        error_msg = str(exc)
-                        if "rate" in error_msg.lower() or "limit" in error_msg.lower():
-                            st.error("**Rate-limit hit.** Wait a moment and try again, or switch to a different LLM provider in the sidebar.", icon="⏳")
-                        elif "auth" in error_msg.lower() or "key" in error_msg.lower() or "401" in error_msg:
-                            st.error("**Authentication error.** Double-check your API key in the sidebar.", icon="🔑")
-                        else:
-                            st.error(f"**Agent error:** {error_msg}", icon="🚨")
-                    finally:
-                        st.session_state["is_processing"] = False
+                    async def _run():
+                        async for event in process_complaint_stream(
+                            complaint=complaint_text,
+                            customer_name=customer_name,
+                            order_id=order_id,
+                            model_client=client,
+                        ):
+                            if event["type"] == "agent_message":
+                                src = event["source"]
+                                workflow_state["updates"].append((src, event["content"]))
+                                completed_agents.append(src)
+
+                                # Next node becomes active, prior nodes & line turn green
+                                next_step = next_agent_lookup.get(src)
+                                tree_placeholder.markdown(
+                                    render_connected_workflow(
+                                        active_agent_key=next_step,
+                                        completed_keys=completed_agents,
+                                    ),
+                                    unsafe_allow_html=True,
+                                )
+                            elif event["type"] == "final_result":
+                                workflow_state["final_data"] = event["result"]
+
+                    asyncio.run(_run())
+
+                    # Final state: all 4 nodes green with full connecting line
+                    tree_placeholder.markdown(
+                        render_connected_workflow(
+                            active_agent_key=None,
+                            completed_keys=[s["key"] for s in WORKFLOW_STEPS],
+                        ),
+                        unsafe_allow_html=True,
+                    )
+
+                    st.session_state["latest_result"] = workflow_state["final_data"]
+                    st.session_state["latest_updates"] = workflow_state["updates"]
+                    st.session_state["run_count"] = st.session_state.get("run_count", 0) + 1
+
+                except Exception as exc:
+                    error_msg = str(exc)
+                    if "rate" in error_msg.lower() or "limit" in error_msg.lower():
+                        st.error("**Rate-limit hit.** Wait a moment and try again, or switch to a different LLM provider in the sidebar.", icon="⏳")
+                    elif "auth" in error_msg.lower() or "key" in error_msg.lower() or "401" in error_msg:
+                        st.error("**Authentication error.** Double-check your API key in the sidebar.", icon="🔑")
+                    else:
+                        st.error(f"**Agent error:** {error_msg}", icon="🚨")
+                finally:
+                    st.session_state["is_processing"] = False
 
         # ── Display persisted result (survives re-runs) ──
         res = st.session_state.get("latest_result")
