@@ -14,8 +14,8 @@ Summary: <A concise, clear 1-line summary of the customer's problem>
 
 Rules:
 1. Category must be one of: Shipping, Refund, Account, Product, Billing, Other.
-2. Urgency: Set to "High" if the customer mentions severe delivery delays, unauthorized charges, repeated billing, legal action, or extreme distress. Set to "Medium" for normal inquiries or requests. Set to "Low" for general questions.
-3. Sentiment: Detect if the customer is Calm, Neutral, Frustrated, Angry, or Very Angry (e.g. threats of lawyers, bank chargebacks, exclamation marks).
+2. Urgency: Set to "High" ONLY if the customer mentions severe delays (e.g. over a week late, lost package claims), unauthorized charges, repeated billing, legal action, or extreme emergency distress. Routine shipping delays (e.g. due yesterday or 1-2 days late), standard refund requests, or password resets MUST be marked "Medium" or "Low".
+3. Sentiment: Detect if the customer is Calm, Neutral, Frustrated, Angry, or Very Angry (e.g. threats of lawyers, bank chargebacks, exclamation marks). Routine questions are Calm or Neutral.
 4. Summary: Exactly one sentence capturing the essential customer issue without fluff.
 """
 

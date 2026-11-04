@@ -143,11 +143,12 @@ section[data-testid="stSidebar"] .stButton > button:hover { background: #475569;
 
 /* ── Response card ─────────────────────────────────────── */
 .response-card {
-    border-radius: 14px;
-    padding: 1.5rem 1.75rem;
-    margin: 1rem 0;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin: 0.75rem 0;
     font-size: 0.95rem;
-    line-height: 1.65;
+    line-height: 1.7;
+    white-space: pre-wrap;
     position: relative;
 }
 .response-card.resolved {
@@ -189,6 +190,35 @@ section[data-testid="stSidebar"] .stButton > button:hover { background: #475569;
     margin: 0.75rem 0;
     font-size: 0.92rem;
     line-height: 1.6;
+}
+
+.customer-meta-tag {
+    font-size: 0.84rem;
+    color: #64748b;
+    margin-top: 0.75rem;
+    margin-bottom: 0.35rem;
+}
+
+.response-box-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 1.25rem;
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.escalation-alert-card {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-radius: 10px;
+    padding: 0.85rem 1.15rem;
+    color: #991b1b;
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin-top: 1rem;
 }
 
 /* ── Section titles ────────────────────────────────────── */
@@ -237,145 +267,157 @@ button[kind="primary"]:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   VERTICAL STEP-BY-STEP CONNECTED WORKFLOW (DOTS & LINE)
+   HIGHLIGHTED RESOLUTION DECISION PANEL STYLES
    ═══════════════════════════════════════════════════════════ */
-.workflow-tree {
-    position: relative;
-    padding-left: 8px;
-    margin: 1rem 0;
-}
-
-.tree-node {
-    position: relative;
-    padding-bottom: 1.5rem;
-    padding-left: 2.4rem;
-}
-
-.tree-node:last-child {
-    padding-bottom: 0.25rem;
-}
-
-/* Continuous connecting line between dots */
-.tree-node::before {
-    content: '';
-    position: absolute;
-    left: 13px;
-    top: 30px;
-    bottom: -6px;
-    width: 3px;
-    background: #e2e8f0;
-    transition: background 0.4s ease, box-shadow 0.4s ease;
-}
-
-/* Line turns bright green when step is completed */
-.tree-node.completed::before {
-    background: #10b981;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-}
-
-.tree-node:last-child::before {
-    display: none;
-}
-
-/* Node indicator circle */
-.tree-dot {
-    position: absolute;
-    left: 0;
-    top: 2px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.82rem;
-    font-weight: 700;
-    z-index: 2;
-    transition: all 0.3s ease;
-}
-
-/* Pending State */
-.tree-node.pending .tree-dot {
-    background: #f1f5f9;
-    border: 2px solid #cbd5e1;
-    color: #94a3b8;
-}
-
-/* Active / Running State (Pulsing blue/indigo) */
-.tree-node.active .tree-dot {
-    background: #6366f1;
-    border: 3px solid #c7d2fe;
-    color: #ffffff;
-    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
-    animation: pulse-ring 1.5s infinite;
-}
-
-@keyframes pulse-ring {
-    0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-}
-
-/* Completed State (Vibrant emerald green with checkmark) */
-.tree-node.completed .tree-dot {
-    background: #10b981;
-    border: 2px solid #059669;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-}
-
-/* Step Content Card */
-.tree-content {
+.decision-panel {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 0.85rem 1.15rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-    transition: all 0.2s ease;
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+    margin-bottom: 1rem;
 }
 
-.tree-node.active .tree-content {
-    border-color: #a5b4fc;
-    background: #f8faff;
-}
-
-.tree-node.completed .tree-content {
-    border-color: #bbf7d0;
-}
-
-.tree-header {
-    display: flex;
-    justify-content: space-between;
+.decision-badge-resolved {
+    display: inline-flex;
     align-items: center;
-}
-
-.tree-title {
-    font-weight: 700;
-    font-size: 0.92rem;
-    color: #1e293b;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.tree-desc {
-    font-size: 0.8rem;
-    color: #64748b;
-    margin-top: 2px;
-}
-
-.tree-badge {
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 2px 8px;
+    gap: 8px;
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: #166534;
+    border: 1px solid #86efac;
+    padding: 0.65rem 1.4rem;
     border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
 }
 
-.tree-node.pending .tree-badge { background: #f1f5f9; color: #94a3b8; }
-.tree-node.active .tree-badge  { background: #ede9fe; color: #4f46e5; }
-.tree-node.completed .tree-badge { background: #dcfce7; color: #15803d; }
+.decision-badge-escalated {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    padding: 0.65rem 1.4rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
+}
+
+.decision-badge-icon {
+    font-size: 1.15rem;
+}
+
+.customer-info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 1rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.88rem;
+    color: #475569;
+}
+
+.customer-info-tag {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.complaint-quote {
+    background: #f8fafc;
+    border-left: 4px solid #6366f1;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.25rem;
+    font-style: italic;
+    color: #1e293b;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0.6rem 0 1.25rem 0;
+}
+
+.response-box-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.response-card {
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin: 0.5rem 0 1.25rem 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.response-card.resolved {
+    background: #f0fdf4;
+    border: 1.5px solid #86efac;
+    color: #14532d;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.08);
+}
+.response-card.escalated {
+    background: #fef2f2;
+    border: 1.5px solid #fca5a5;
+    color: #7f1d1d;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.08);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin: 1.25rem 0;
+}
+.detail-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.8rem 0.6rem;
+    text-align: center;
+}
+.detail-item .label {
+    font-size: 0.68rem;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+.detail-item .value {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 3px;
+    word-break: break-word;
+}
+
+.escalation-alert-card {
+    background: #fff1f2;
+    border: 1.5px solid #f87171;
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    color: #991b1b;
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -460,96 +502,9 @@ for _k, _v in _DEFAULTS.items():
 # ═══════════════════════════════════════════════════════════════════
 #  HELPERS
 # ═══════════════════════════════════════════════════════════════════
-WORKFLOW_STEPS = [
-    {
-        "key": "Query_Agent",
-        "icon": "🔍",
-        "title": "Query Analyst",
-        "desc": "Extracts customer intent, urgency level & emotional sentiment",
-    },
-    {
-        "key": "Knowledge_Agent",
-        "icon": "📚",
-        "title": "Knowledge Retriever",
-        "desc": "Executes semantic RAG search across ChromaDB vector store",
-    },
-    {
-        "key": "Resolution_Agent",
-        "icon": "✍️",
-        "title": "Resolution Drafter",
-        "desc": "Drafts grounded reply strictly matching company policy facts",
-    },
-    {
-        "key": "Log_Agent",
-        "icon": "📋",
-        "title": "QA & Auditor",
-        "desc": "Evaluates 5 escalation criteria & records ticket to CSV",
-    },
-]
-
-
-def render_connected_workflow(
-    active_agent_key: str = None,
-    completed_keys: list = None,
-    step_summaries: dict = None,
-) -> str:
-    """Generates connected vertical tree HTML with animated dots and green connecting lines.
-
-    Constructed strictly without leading whitespace or indentation to prevent
-    Markdown parsers from interpreting any tag as an indented code block.
-    """
-    completed_keys = completed_keys or []
-    step_summaries = step_summaries or {}
-    lines = ['<div class="workflow-tree">']
-
-    for idx, step in enumerate(WORKFLOW_STEPS, 1):
-        key = step["key"]
-        if key in completed_keys:
-            state = "completed"
-            dot_content = "✓"
-            badge = "Completed"
-        elif key == active_agent_key:
-            state = "active"
-            dot_content = str(idx)
-            badge = "In Progress"
-        else:
-            state = "pending"
-            dot_content = str(idx)
-            badge = "Pending"
-
-        summary_text = step_summaries.get(key)
-        if summary_text:
-            desc_html = f'<div class="tree-desc" style="color:#0f172a; font-weight:500;">{summary_text}</div>'
-        else:
-            desc_html = f'<div class="tree-desc">{step["desc"]}</div>'
-
-        lines.append(
-            f'<div class="tree-node {state}">'
-            f'<div class="tree-dot">{dot_content}</div>'
-            f'<div class="tree-content">'
-            f'<div class="tree-header">'
-            f'<div class="tree-title">{step["icon"]} {step["title"]}</div>'
-            f'<span class="tree-badge">{badge}</span>'
-            f'</div>'
-            f'{desc_html}'
-            f'</div>'
-            f'</div>'
-        )
-
-    lines.append('</div>')
-    return "".join(lines)
-
-
-def get_step_summaries(res: dict) -> dict:
-    """Extract human-readable one-line summaries for completed steps."""
-    if not res:
-        return {}
-    return {
-        "Query_Agent": f"Category: {res.get('category', 'General')} · Urgency: {res.get('urgency', 'Low')} · Sentiment: {res.get('sentiment', 'Neutral')}",
-        "Knowledge_Agent": f"Sources consulted: {res.get('kb_sources', 'None')}",
-        "Resolution_Agent": f"Grounded reply ready · Confidence: {res.get('confidence', 'High')}",
-        "Log_Agent": f"Decision: {res.get('status', 'Resolved')} · Ticket: {res.get('ticket_id', 'N/A')}",
-    }
+def clean_html(html_str: str) -> str:
+    """Strips leading whitespace from every line to ensure Markdown never treats HTML as an indented code block."""
+    return re.sub(r"^[ \t]+", "", html_str, flags=re.MULTILINE).strip()
 
 
 def load_logs() -> pd.DataFrame:
@@ -566,18 +521,19 @@ def load_logs() -> pd.DataFrame:
 
 
 def render_kpi(value: str, label: str, accent: str = "blue") -> str:
-    """Return HTML for a single KPI metric card."""
-    return f"""
+    """Return clean HTML for a single KPI metric card."""
+    return clean_html(f"""
     <div class="kpi-card kpi-accent-{accent}">
         <div class="kpi-value">{value}</div>
         <div class="kpi-label">{label}</div>
-    </div>"""
+    </div>
+    """)
 
 
 def render_agent_step(source: str, content: str) -> None:
     """Render a single agent timeline step as a styled card."""
     meta = AGENT_META.get(source, {"icon": "🤖", "css": "query", "label": source, "desc": ""})
-    st.markdown(f"""
+    st.markdown(clean_html(f"""
     <div class="agent-step">
         <div class="agent-step-header">
             <div class="agent-step-icon {meta['css']}">{meta['icon']}</div>
@@ -586,7 +542,8 @@ def render_agent_step(source: str, content: str) -> None:
                 <div class="agent-step-role">{meta['desc']}</div>
             </div>
         </div>
-    </div>""", unsafe_allow_html=True)
+    </div>
+    """), unsafe_allow_html=True)
     st.code(content, language="markdown")
 
 
@@ -594,7 +551,7 @@ def render_agent_step(source: str, content: str) -> None:
 #  SIDEBAR
 # ═══════════════════════════════════════════════════════════════════
 with st.sidebar:
-    st.markdown("""
+    st.markdown(clean_html("""
     <div style="text-align:center; padding: 0.5rem 0 1rem 0;">
         <span style="font-size:2rem;">🛡️</span>
         <div style="font-size:1.1rem; font-weight:800; margin-top:0.25rem; color:#f1f5f9;">
@@ -603,7 +560,7 @@ with st.sidebar:
         <div style="font-size:0.72rem; color:#64748b; margin-top:2px;">
             AutoGen v0.4+ · ChromaDB · Streamlit
         </div>
-    </div>""", unsafe_allow_html=True)
+    </div>"""), unsafe_allow_html=True)
 
     st.markdown("---")
 
@@ -692,11 +649,11 @@ with st.sidebar:
 # ═══════════════════════════════════════════════════════════════════
 #  HERO BANNER
 # ═══════════════════════════════════════════════════════════════════
-st.markdown("""
+st.markdown(clean_html("""
 <div class="hero-banner">
     <h1>🛡️ AI Customer Support Desk</h1>
     <p>Multi-agent orchestration with AutoGen v0.4+ · ChromaDB vector RAG · Real-time analytics</p>
-</div>""", unsafe_allow_html=True)
+</div>"""), unsafe_allow_html=True)
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -754,9 +711,6 @@ with tab_console:
     with col_result:
         # Show right side ONLY when Process with AI Agents is clicked or when a result exists
         if submit or st.session_state.get("latest_result"):
-            st.markdown('<div class="section-title">🤖 Multi-Agent Workflow</div>', unsafe_allow_html=True)
-            tree_placeholder = st.empty()
-
             # ── Handle new submission ──
             if submit:
                 if not complaint_text.strip():
@@ -768,204 +722,155 @@ with tab_console:
                     st.session_state["latest_result"] = None
                     st.session_state["latest_updates"] = []
 
-                    completed_agents = []
-                    live_summaries = {}
+                    with st.status("🤖 AI Multi-Agent Team Processing Complaint...", expanded=True) as status_widget:
+                        try:
+                            client = get_model_client(
+                                api_key=api_key_input,
+                                model=custom_model,
+                                provider=selected_provider_name,
+                                base_url=selected_base_url,
+                            )
 
-                    # Stage 0: Step 1 (Query Agent) starts as active
-                    tree_placeholder.markdown(
-                        render_connected_workflow(active_agent_key="Query_Agent", completed_keys=[]),
-                        unsafe_allow_html=True,
-                    )
+                            workflow_state: Dict[str, Any] = {"final_data": None, "updates": []}
 
-                    try:
-                        client = get_model_client(
-                            api_key=api_key_input,
-                            model=custom_model,
-                            provider=selected_provider_name,
-                            base_url=selected_base_url,
+                            async def _run():
+                                async for event in process_complaint_stream(
+                                    complaint=complaint_text,
+                                    customer_name=customer_name,
+                                    order_id=order_id,
+                                    model_client=client,
+                                ):
+                                    if event["type"] == "agent_message":
+                                        src = event["source"]
+                                        cnt = event["content"]
+                                        workflow_state["updates"].append((src, cnt))
+                                        if src == "Query_Agent":
+                                            status_widget.write("🔍 **Query Analyst**: Extracted customer intent, urgency & sentiment.")
+                                        elif src == "Knowledge_Agent":
+                                            status_widget.write("📚 **Knowledge Retriever**: Searched ChromaDB policy documents.")
+                                        elif src == "Resolution_Agent":
+                                            status_widget.write("✍️ **Resolution Drafter**: Composed grounded resolution response.")
+                                        elif src == "Log_Agent":
+                                            status_widget.write("📋 **QA & Auditor**: Evaluated escalation rules & logged to CSV.")
+                                    elif event["type"] == "final_result":
+                                        workflow_state["final_data"] = event["result"]
+
+                            asyncio.run(_run())
+
+                            status_widget.update(label="✅ All Agents Finished Processing!", state="complete", expanded=False)
+
+                            st.session_state["latest_result"] = workflow_state["final_data"]
+                            st.session_state["latest_updates"] = workflow_state["updates"]
+                            st.session_state["run_count"] = st.session_state.get("run_count", 0) + 1
+
+                        except Exception as exc:
+                            status_widget.update(label="❌ Multi-Agent Processing Failed", state="error", expanded=True)
+                            error_msg = str(exc)
+                            if "rate" in error_msg.lower() or "limit" in error_msg.lower():
+                                st.error("**Rate-limit hit.** Wait a moment and try again, or switch to a different LLM provider in the sidebar.", icon="⏳")
+                            elif "auth" in error_msg.lower() or "key" in error_msg.lower() or "401" in error_msg:
+                                st.error("**Authentication error.** Double-check your API key in the sidebar.", icon="🔑")
+                            else:
+                                st.error(f"**Agent error:** {error_msg}", icon="🚨")
+                        finally:
+                            st.session_state["is_processing"] = False
+
+            # ── Highlighted Resolution Decision Panel ──
+            res = st.session_state.get("latest_result")
+            if res:
+                is_esc = res["status"].lower() == "escalated"
+                panel_cls = "escalated" if is_esc else "resolved"
+
+                st.markdown(clean_html('<div class="section-title">📊 Support Decision & Resolution Summary</div>'), unsafe_allow_html=True)
+
+                with st.container(border=True):
+                    # 1. Prominent Status Badge Pill
+                    if is_esc:
+                        badge_html = clean_html(
+                            '<div class="decision-badge-escalated">'
+                            '<span class="decision-badge-icon">🚨</span>'
+                            '<span>ESCALATED — Forwarded to Human Agent</span>'
+                            '</div>'
                         )
-
-                        workflow_state: Dict[str, Any] = {"final_data": None, "updates": []}
-
-                        next_agent_lookup = {
-                            "Query_Agent": "Knowledge_Agent",
-                            "Knowledge_Agent": "Resolution_Agent",
-                            "Resolution_Agent": "Log_Agent",
-                            "Log_Agent": None,
-                        }
-
-                        async def _run():
-                            async for event in process_complaint_stream(
-                                complaint=complaint_text,
-                                customer_name=customer_name,
-                                order_id=order_id,
-                                model_client=client,
-                            ):
-                                if event["type"] == "agent_message":
-                                    src = event["source"]
-                                    cnt = event["content"]
-                                    workflow_state["updates"].append((src, cnt))
-                                    if src not in completed_agents:
-                                        completed_agents.append(src)
-
-                                    # Live inline summaries per agent
-                                    if src == "Query_Agent":
-                                        cat_m = re.search(r"Category:\s*([A-Za-z]+)", cnt, re.I)
-                                        urg_m = re.search(r"Urgency:\s*(Low|Medium|High)", cnt, re.I)
-                                        sent_m = re.search(r"Sentiment:\s*([A-Za-z ]+)", cnt, re.I)
-                                        cat_val = cat_m.group(1) if cat_m else "Classified"
-                                        urg_val = urg_m.group(1) if urg_m else "Normal"
-                                        sent_val = sent_m.group(1).strip() if sent_m else "Neutral"
-                                        live_summaries["Query_Agent"] = f"Category: {cat_val} · Urgency: {urg_val} · Sentiment: {sent_val}"
-                                    elif src == "Knowledge_Agent":
-                                        sources = re.findall(r"\[Source:\s*([^\]]+)\]", cnt)
-                                        if sources:
-                                            live_summaries["Knowledge_Agent"] = f"Sources: {', '.join(dict.fromkeys(sources))}"
-                                        else:
-                                            live_summaries["Knowledge_Agent"] = "No matching documents found in KB"
-                                    elif src == "Resolution_Agent":
-                                        conf_m = re.search(r"Confidence:\s*(High|Low)", cnt, re.I)
-                                        conf_val = conf_m.group(1) if conf_m else "High"
-                                        live_summaries["Resolution_Agent"] = f"Resolution drafted · Confidence: {conf_val}"
-                                    elif src == "Log_Agent":
-                                        stat_m = re.search(r"Status:\s*(Resolved|Escalated)", cnt, re.I)
-                                        stat_val = stat_m.group(1) if stat_m else "Completed"
-                                        live_summaries["Log_Agent"] = f"Outcome: {stat_val} · Ticket logged to CSV"
-
-                                    # Next node becomes active, prior nodes & line turn green
-                                    next_step = next_agent_lookup.get(src)
-                                    tree_placeholder.markdown(
-                                        render_connected_workflow(
-                                            active_agent_key=next_step,
-                                            completed_keys=completed_agents,
-                                            step_summaries=live_summaries,
-                                        ),
-                                        unsafe_allow_html=True,
-                                    )
-                                elif event["type"] == "final_result":
-                                    workflow_state["final_data"] = event["result"]
-
-                        asyncio.run(_run())
-
-                        # Final state: all 4 nodes green with full connecting line and consolidated summaries
-                        final_res = workflow_state["final_data"]
-                        final_summaries = get_step_summaries(final_res) if final_res else live_summaries
-                        tree_placeholder.markdown(
-                            render_connected_workflow(
-                                active_agent_key=None,
-                                completed_keys=[s["key"] for s in WORKFLOW_STEPS],
-                                step_summaries=final_summaries,
-                            ),
-                            unsafe_allow_html=True,
+                    else:
+                        badge_html = clean_html(
+                            '<div class="decision-badge-resolved">'
+                            '<span class="decision-badge-icon">✅</span>'
+                            '<span>RESOLVED — Handled by AI Support</span>'
+                            '</div>'
                         )
+                    st.markdown(badge_html, unsafe_allow_html=True)
 
-                        st.session_state["latest_result"] = workflow_state["final_data"]
-                        st.session_state["latest_updates"] = workflow_state["updates"]
-                        st.session_state["run_count"] = st.session_state.get("run_count", 0) + 1
+                    # 2. Customer Context & Complaint Quote
+                    c_name_val = customer_name.strip() if customer_name else "Customer"
+                    o_id_val = order_id.strip() if order_id else "N/A"
+                    cust_html = clean_html(f"""
+                    <div class="customer-info-row">
+                        <span class="customer-info-tag">👤 <b>{c_name_val}</b></span>
+                        <span class="customer-info-tag">Order ID: <b>{o_id_val}</b></span>
+                    </div>
+                    <div class="complaint-quote">"{res["complaint"]}"</div>
+                    """)
+                    st.markdown(cust_html, unsafe_allow_html=True)
 
-                    except Exception as exc:
-                        error_msg = str(exc)
-                        if "rate" in error_msg.lower() or "limit" in error_msg.lower():
-                            st.error("**Rate-limit hit.** Wait a moment and try again, or switch to a different LLM provider in the sidebar.", icon="⏳")
-                        elif "auth" in error_msg.lower() or "key" in error_msg.lower() or "401" in error_msg:
-                            st.error("**Authentication error.** Double-check your API key in the sidebar.", icon="🔑")
-                        else:
-                            st.error(f"**Agent error:** {error_msg}", icon="🚨")
-                    finally:
-                        st.session_state["is_processing"] = False
-            else:
-                # Steady-state: Render completed workflow tree with summaries
-                existing_res = st.session_state.get("latest_result")
-                if existing_res:
-                    tree_placeholder.markdown(
-                        render_connected_workflow(
-                            active_agent_key=None,
-                            completed_keys=[s["key"] for s in WORKFLOW_STEPS],
-                            step_summaries=get_step_summaries(existing_res),
-                        ),
-                        unsafe_allow_html=True,
-                    )
+                    # 3. Proposed Customer Response
+                    resp_header = clean_html('<div class="response-box-title">💬 Proposed Customer Response</div>')
+                    st.markdown(resp_header, unsafe_allow_html=True)
+                    resp_card = clean_html(f'<div class="response-card {panel_cls}">{res["response"]}</div>')
+                    st.markdown(resp_card, unsafe_allow_html=True)
 
-        # ── Display persisted result (survives re-runs) ──
-        res = st.session_state.get("latest_result")
-        if res:
-            is_esc = res["status"].lower() == "escalated"
+                    # 4. 6-Item Metrics Grid
+                    urg_color = {"high": "#dc2626", "medium": "#d97706", "low": "#16a34a"}.get(res["urgency"].lower(), "#64748b")
+                    sent_color = {"very angry": "#dc2626", "angry": "#ef4444", "frustrated": "#f59e0b", "neutral": "#64748b", "calm": "#16a34a"}.get(res["sentiment"].lower(), "#64748b")
+                    conf_color = "#16a34a" if res["confidence"].lower() == "high" else "#dc2626"
 
-            # Status pill
-            if is_esc:
-                st.markdown(
-                    '<div class="pill pill-escalated"><span class="pill-icon">🚨</span> ESCALATED — Forwarded to Human Agent</div>',
-                    unsafe_allow_html=True,
-                )
-            else:
-                st.markdown(
-                    '<div class="pill pill-resolved"><span class="pill-icon">✅</span> RESOLVED — Handled by AI Support</div>',
-                    unsafe_allow_html=True,
-                )
+                    grid_html = clean_html(f"""
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="label">Ticket ID</div>
+                            <div class="value">{res.get("ticket_id", "N/A")}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Category</div>
+                            <div class="value">{res.get("category", "General")}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Urgency</div>
+                            <div class="value" style="color:{urg_color};">{res.get("urgency", "Low")}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Sentiment</div>
+                            <div class="value" style="color:{sent_color};">{res.get("sentiment", "Neutral")}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Confidence</div>
+                            <div class="value" style="color:{conf_color};">{res.get("confidence", "High")}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">KB Sources</div>
+                            <div class="value" style="font-size:0.82rem;">{res.get("kb_sources", "None")}</div>
+                        </div>
+                    </div>
+                    """)
+                    st.markdown(grid_html, unsafe_allow_html=True)
 
-            st.markdown("")  # spacer
+                    # 5. Prominent Escalation Reason Alert
+                    if is_esc and res.get("escalation_reason", "None") not in ("None", ""):
+                        esc_html = clean_html(f"""
+                        <div class="escalation-alert-card">
+                            <span style="font-size:1.15rem;">🚨</span>
+                            <div><b>Escalation Reason:</b> {res["escalation_reason"]}</div>
+                        </div>
+                        """)
+                        st.markdown(esc_html, unsafe_allow_html=True)
 
-            # Customer complaint echo
-            st.markdown(f'<div class="complaint-quote">"{res["complaint"]}"</div>', unsafe_allow_html=True)
-
-            # Proposed response
-            st.markdown('<div class="section-title">💬 Proposed Customer Response</div>', unsafe_allow_html=True)
-            css_cls = "escalated" if is_esc else "resolved"
-            st.markdown(f'<div class="response-card {css_cls}">{res["response"]}</div>', unsafe_allow_html=True)
-
-            # Detail grid
-            urg_color = {"high": "#dc2626", "medium": "#d97706", "low": "#16a34a"}.get(res["urgency"].lower(), "#64748b")
-            sent_color = {"very angry": "#dc2626", "angry": "#ef4444", "frustrated": "#f59e0b", "neutral": "#64748b", "calm": "#16a34a"}.get(res["sentiment"].lower(), "#64748b")
-            conf_color = "#16a34a" if res["confidence"].lower() == "high" else "#dc2626"
-
-            st.markdown(f"""
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <div class="label">Ticket ID</div>
-                    <div class="value">{res.get("ticket_id", "N/A")}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="label">Category</div>
-                    <div class="value">{res.get("category", "General")}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="label">Urgency</div>
-                    <div class="value" style="color:{urg_color}">{res.get("urgency", "Low")}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="label">Sentiment</div>
-                    <div class="value" style="color:{sent_color}">{res.get("sentiment", "Neutral")}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="label">Confidence</div>
-                    <div class="value" style="color:{conf_color}">{res.get("confidence", "High")}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="label">KB Sources</div>
-                    <div class="value" style="font-size:0.82rem">{res.get("kb_sources", "None")}</div>
-                </div>
-            </div>""", unsafe_allow_html=True)
-
-            # Escalation reason callout
-            if is_esc and res.get("escalation_reason", "None") != "None":
-                st.error(f"**Escalation Reason:** {res['escalation_reason']}", icon="🚨")
-
-            # Agent thought-process timeline
-            updates: List[Tuple[str, str]] = st.session_state.get("latest_updates", [])
-            if updates:
-                with st.expander("🕵️  Inspect Agent Step-by-Step Outputs", expanded=False):
-                    for src, cnt in updates:
-                        render_agent_step(src, cnt)
-        else:
-            # Empty state
-            st.markdown("""
-            <div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">
-                <div style="font-size:3rem; margin-bottom:0.5rem;">🤖</div>
-                <div style="font-size:1rem; font-weight:600; color:#64748b;">No active workflow</div>
-                <div style="font-size:0.85rem; margin-top:0.3rem;">
-                    Fill out a complaint on the left and click <b>Process with AI Agents</b> to begin.
-                </div>
-            </div>""", unsafe_allow_html=True)
+                    # 6. Agent thought-process timeline expander
+                    updates: List[Tuple[str, str]] = st.session_state.get("latest_updates", [])
+                    if updates:
+                        st.markdown("")
+                        with st.expander("🕵️  Inspect Agent Step-by-Step Outputs", expanded=False):
+                            for src, cnt in updates:
+                                render_agent_step(src, cnt)
 
 
 # ═══════════════════════════════════════════════════════════════════
