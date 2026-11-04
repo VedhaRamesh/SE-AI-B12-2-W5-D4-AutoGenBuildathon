@@ -752,142 +752,139 @@ with tab_console:
 
     # ── RIGHT: Agent Execution & Results ──────────────────
     with col_result:
-        st.markdown('<div class="section-title">🤖 Multi-Agent Workflow</div>', unsafe_allow_html=True)
-        tree_placeholder = st.empty()
+        # Show right side ONLY when Process with AI Agents is clicked or when a result exists
+        if submit or st.session_state.get("latest_result"):
+            st.markdown('<div class="section-title">🤖 Multi-Agent Workflow</div>', unsafe_allow_html=True)
+            tree_placeholder = st.empty()
 
-        # ── Handle new submission ──
-        if submit:
-            if not complaint_text.strip():
-                st.error("Please enter a customer complaint before submitting.", icon="⚠️")
-            elif not api_key_input or api_key_input.startswith("your_"):
-                st.error("Configure a valid API key in the sidebar (or .env file) to run AI agents.", icon="🔑")
-            else:
-                st.session_state["is_processing"] = True
-                st.session_state["latest_result"] = None
-                st.session_state["latest_updates"] = []
+            # ── Handle new submission ──
+            if submit:
+                if not complaint_text.strip():
+                    st.error("Please enter a customer complaint before submitting.", icon="⚠️")
+                elif not api_key_input or api_key_input.startswith("your_"):
+                    st.error("Configure a valid API key in the sidebar (or .env file) to run AI agents.", icon="🔑")
+                else:
+                    st.session_state["is_processing"] = True
+                    st.session_state["latest_result"] = None
+                    st.session_state["latest_updates"] = []
 
-                completed_agents = []
-                live_summaries = {}
+                    completed_agents = []
+                    live_summaries = {}
 
-                # Stage 0: Step 1 (Query Agent) starts as active
-                tree_placeholder.markdown(
-                    render_connected_workflow(active_agent_key="Query_Agent", completed_keys=[]),
-                    unsafe_allow_html=True,
-                )
-
-                try:
-                    client = get_model_client(
-                        api_key=api_key_input,
-                        model=custom_model,
-                        provider=selected_provider_name,
-                        base_url=selected_base_url,
+                    # Stage 0: Step 1 (Query Agent) starts as active
+                    tree_placeholder.markdown(
+                        render_connected_workflow(active_agent_key="Query_Agent", completed_keys=[]),
+                        unsafe_allow_html=True,
                     )
 
-                    workflow_state: Dict[str, Any] = {"final_data": None, "updates": []}
+                    try:
+                        client = get_model_client(
+                            api_key=api_key_input,
+                            model=custom_model,
+                            provider=selected_provider_name,
+                            base_url=selected_base_url,
+                        )
 
-                    next_agent_lookup = {
-                        "Query_Agent": "Knowledge_Agent",
-                        "Knowledge_Agent": "Resolution_Agent",
-                        "Resolution_Agent": "Log_Agent",
-                        "Log_Agent": None,
-                    }
+                        workflow_state: Dict[str, Any] = {"final_data": None, "updates": []}
 
-                    async def _run():
-                        async for event in process_complaint_stream(
-                            complaint=complaint_text,
-                            customer_name=customer_name,
-                            order_id=order_id,
-                            model_client=client,
-                        ):
-                            if event["type"] == "agent_message":
-                                src = event["source"]
-                                cnt = event["content"]
-                                workflow_state["updates"].append((src, cnt))
-                                if src not in completed_agents:
-                                    completed_agents.append(src)
+                        next_agent_lookup = {
+                            "Query_Agent": "Knowledge_Agent",
+                            "Knowledge_Agent": "Resolution_Agent",
+                            "Resolution_Agent": "Log_Agent",
+                            "Log_Agent": None,
+                        }
 
-                                # Live inline summaries per agent
-                                if src == "Query_Agent":
-                                    cat_m = re.search(r"Category:\s*([A-Za-z]+)", cnt, re.I)
-                                    urg_m = re.search(r"Urgency:\s*(Low|Medium|High)", cnt, re.I)
-                                    sent_m = re.search(r"Sentiment:\s*([A-Za-z ]+)", cnt, re.I)
-                                    cat_val = cat_m.group(1) if cat_m else "Classified"
-                                    urg_val = urg_m.group(1) if urg_m else "Normal"
-                                    sent_val = sent_m.group(1).strip() if sent_m else "Neutral"
-                                    live_summaries["Query_Agent"] = f"Category: {cat_val} · Urgency: {urg_val} · Sentiment: {sent_val}"
-                                elif src == "Knowledge_Agent":
-                                    sources = re.findall(r"\[Source:\s*([^\]]+)\]", cnt)
-                                    if sources:
-                                        live_summaries["Knowledge_Agent"] = f"Sources: {', '.join(dict.fromkeys(sources))}"
-                                    else:
-                                        live_summaries["Knowledge_Agent"] = "No matching documents found in KB"
-                                elif src == "Resolution_Agent":
-                                    conf_m = re.search(r"Confidence:\s*(High|Low)", cnt, re.I)
-                                    conf_val = conf_m.group(1) if conf_m else "High"
-                                    live_summaries["Resolution_Agent"] = f"Resolution drafted · Confidence: {conf_val}"
-                                elif src == "Log_Agent":
-                                    stat_m = re.search(r"Status:\s*(Resolved|Escalated)", cnt, re.I)
-                                    stat_val = stat_m.group(1) if stat_m else "Completed"
-                                    live_summaries["Log_Agent"] = f"Outcome: {stat_val} · Ticket logged to CSV"
+                        async def _run():
+                            async for event in process_complaint_stream(
+                                complaint=complaint_text,
+                                customer_name=customer_name,
+                                order_id=order_id,
+                                model_client=client,
+                            ):
+                                if event["type"] == "agent_message":
+                                    src = event["source"]
+                                    cnt = event["content"]
+                                    workflow_state["updates"].append((src, cnt))
+                                    if src not in completed_agents:
+                                        completed_agents.append(src)
 
-                                # Next node becomes active, prior nodes & line turn green
-                                next_step = next_agent_lookup.get(src)
-                                tree_placeholder.markdown(
-                                    render_connected_workflow(
-                                        active_agent_key=next_step,
-                                        completed_keys=completed_agents,
-                                        step_summaries=live_summaries,
-                                    ),
-                                    unsafe_allow_html=True,
-                                )
-                            elif event["type"] == "final_result":
-                                workflow_state["final_data"] = event["result"]
+                                    # Live inline summaries per agent
+                                    if src == "Query_Agent":
+                                        cat_m = re.search(r"Category:\s*([A-Za-z]+)", cnt, re.I)
+                                        urg_m = re.search(r"Urgency:\s*(Low|Medium|High)", cnt, re.I)
+                                        sent_m = re.search(r"Sentiment:\s*([A-Za-z ]+)", cnt, re.I)
+                                        cat_val = cat_m.group(1) if cat_m else "Classified"
+                                        urg_val = urg_m.group(1) if urg_m else "Normal"
+                                        sent_val = sent_m.group(1).strip() if sent_m else "Neutral"
+                                        live_summaries["Query_Agent"] = f"Category: {cat_val} · Urgency: {urg_val} · Sentiment: {sent_val}"
+                                    elif src == "Knowledge_Agent":
+                                        sources = re.findall(r"\[Source:\s*([^\]]+)\]", cnt)
+                                        if sources:
+                                            live_summaries["Knowledge_Agent"] = f"Sources: {', '.join(dict.fromkeys(sources))}"
+                                        else:
+                                            live_summaries["Knowledge_Agent"] = "No matching documents found in KB"
+                                    elif src == "Resolution_Agent":
+                                        conf_m = re.search(r"Confidence:\s*(High|Low)", cnt, re.I)
+                                        conf_val = conf_m.group(1) if conf_m else "High"
+                                        live_summaries["Resolution_Agent"] = f"Resolution drafted · Confidence: {conf_val}"
+                                    elif src == "Log_Agent":
+                                        stat_m = re.search(r"Status:\s*(Resolved|Escalated)", cnt, re.I)
+                                        stat_val = stat_m.group(1) if stat_m else "Completed"
+                                        live_summaries["Log_Agent"] = f"Outcome: {stat_val} · Ticket logged to CSV"
 
-                    asyncio.run(_run())
+                                    # Next node becomes active, prior nodes & line turn green
+                                    next_step = next_agent_lookup.get(src)
+                                    tree_placeholder.markdown(
+                                        render_connected_workflow(
+                                            active_agent_key=next_step,
+                                            completed_keys=completed_agents,
+                                            step_summaries=live_summaries,
+                                        ),
+                                        unsafe_allow_html=True,
+                                    )
+                                elif event["type"] == "final_result":
+                                    workflow_state["final_data"] = event["result"]
 
-                    # Final state: all 4 nodes green with full connecting line and consolidated summaries
-                    final_res = workflow_state["final_data"]
-                    final_summaries = get_step_summaries(final_res) if final_res else live_summaries
+                        asyncio.run(_run())
+
+                        # Final state: all 4 nodes green with full connecting line and consolidated summaries
+                        final_res = workflow_state["final_data"]
+                        final_summaries = get_step_summaries(final_res) if final_res else live_summaries
+                        tree_placeholder.markdown(
+                            render_connected_workflow(
+                                active_agent_key=None,
+                                completed_keys=[s["key"] for s in WORKFLOW_STEPS],
+                                step_summaries=final_summaries,
+                            ),
+                            unsafe_allow_html=True,
+                        )
+
+                        st.session_state["latest_result"] = workflow_state["final_data"]
+                        st.session_state["latest_updates"] = workflow_state["updates"]
+                        st.session_state["run_count"] = st.session_state.get("run_count", 0) + 1
+
+                    except Exception as exc:
+                        error_msg = str(exc)
+                        if "rate" in error_msg.lower() or "limit" in error_msg.lower():
+                            st.error("**Rate-limit hit.** Wait a moment and try again, or switch to a different LLM provider in the sidebar.", icon="⏳")
+                        elif "auth" in error_msg.lower() or "key" in error_msg.lower() or "401" in error_msg:
+                            st.error("**Authentication error.** Double-check your API key in the sidebar.", icon="🔑")
+                        else:
+                            st.error(f"**Agent error:** {error_msg}", icon="🚨")
+                    finally:
+                        st.session_state["is_processing"] = False
+            else:
+                # Steady-state: Render completed workflow tree with summaries
+                existing_res = st.session_state.get("latest_result")
+                if existing_res:
                     tree_placeholder.markdown(
                         render_connected_workflow(
                             active_agent_key=None,
                             completed_keys=[s["key"] for s in WORKFLOW_STEPS],
-                            step_summaries=final_summaries,
+                            step_summaries=get_step_summaries(existing_res),
                         ),
                         unsafe_allow_html=True,
                     )
-
-                    st.session_state["latest_result"] = workflow_state["final_data"]
-                    st.session_state["latest_updates"] = workflow_state["updates"]
-                    st.session_state["run_count"] = st.session_state.get("run_count", 0) + 1
-
-                except Exception as exc:
-                    error_msg = str(exc)
-                    if "rate" in error_msg.lower() or "limit" in error_msg.lower():
-                        st.error("**Rate-limit hit.** Wait a moment and try again, or switch to a different LLM provider in the sidebar.", icon="⏳")
-                    elif "auth" in error_msg.lower() or "key" in error_msg.lower() or "401" in error_msg:
-                        st.error("**Authentication error.** Double-check your API key in the sidebar.", icon="🔑")
-                    else:
-                        st.error(f"**Agent error:** {error_msg}", icon="🚨")
-                finally:
-                    st.session_state["is_processing"] = False
-        else:
-            # Steady-state: Render workflow tree if result exists, or initial pending state
-            existing_res = st.session_state.get("latest_result")
-            if existing_res:
-                tree_placeholder.markdown(
-                    render_connected_workflow(
-                        active_agent_key=None,
-                        completed_keys=[s["key"] for s in WORKFLOW_STEPS],
-                        step_summaries=get_step_summaries(existing_res),
-                    ),
-                    unsafe_allow_html=True,
-                )
-            else:
-                tree_placeholder.markdown(
-                    render_connected_workflow(active_agent_key=None, completed_keys=[]),
-                    unsafe_allow_html=True,
-                )
 
         # ── Display persisted result (survives re-runs) ──
         res = st.session_state.get("latest_result")
