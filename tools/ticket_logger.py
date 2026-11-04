@@ -92,7 +92,12 @@ def log_ticket(
         Confirmation string indicating successful logging.
     """
     ts = timestamp or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    tid = (ticket_id or "").strip() or get_next_ticket_id()
+    tid_input = (ticket_id or "").strip()
+    # Ensure placeholder values like 'TKT-AUTO' or empty values are replaced with real sequential IDs
+    if not tid_input or tid_input in ("TKT-AUTO", "TKT-XXXX", "None", "AUTO", "TKT-0000"):
+        tid = get_next_ticket_id()
+    else:
+        tid = tid_input
     stat = "Escalated" if "escalat" in (status or "").lower() else "Resolved"
     esc_reason = (escalation_reason or "None").strip()
 

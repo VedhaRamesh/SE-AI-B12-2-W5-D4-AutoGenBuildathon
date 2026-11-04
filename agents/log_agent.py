@@ -26,7 +26,7 @@ If NONE of the 5 conditions are met:
 
 EXECUTION STEPS:
 1. Synthesize the collected fields:
-   - ticket_id: Keep existing or use "TKT-AUTO"
+   - ticket_id: Pass "" (empty string to auto-assign the sequential TKT-XXXX ID)
    - customer_info: Name and Order ID from initial message (e.g. "Priya · ORD-4512")
    - complaint: Customer's original complaint text
    - category: From Query Agent

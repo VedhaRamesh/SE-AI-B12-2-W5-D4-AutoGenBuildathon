@@ -1,2 +1,505 @@
 ticket_id,timestamp,customer_name / order_id,complaint,category · urgency · sentiment,kb_sources,response,status,escalation_reason,category,urgency,sentiment
 TKT-0001,2026-11-04 12:41:21,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0002,2026-11-04 12:42:56,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0003,2026-11-04 12:46:43,Priya Sharma · ORD-4512,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,shipping_policy.md,"Dear Priya Sharma, 
+
+Thank you for reaching out regarding your order (ORD-4512). I understand how frustrating it can be when an expected delivery does not arrive on time. According to our shipping policy, standard orders are typically delivered within 3 to 5 business days following order confirmation. 
+
+To assist you further, I recommend checking the tracking information that was sent to you via email or SMS. You can also track your package at any time through the ""Track Order"" tab on our website or your account dashboard. 
+
+If you still have concerns or cannot locate your tracking information, please let me know, and I will ensure your inquiry is escalated to our human customer support team for further assistance. 
+
+Thank you for your patience, and I apologize for any inconvenience this may have caused.",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0004,2026-11-04 12:46:51,Priya Sharma · ORD-4512,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,shipping_policy.md,"Dear Priya Sharma,
+
+I appreciate your patience as we look into the status of your order (ORD-4512). I understand that it was expected to arrive yesterday, and I can see how this delay is frustrating. 
+
+As per our shipping policy, standard orders are typically delivered within 3 to 5 business days following order confirmation. I recommend checking the tracking information that was sent to you via email or SMS, as it can provide real-time updates on your package's location. You can also track your order through the ""Track Order"" tab on our website or your account dashboard.
+
+If you are unable to find the tracking information or if you have further concerns, please let me know. I have escalated your inquiry to our human customer support team, and they will be able to assist you further.
+
+Thank you for your understanding, and I apologize for any inconvenience this may have caused.",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0005,2026-11-04 12:46:55,Priya Sharma · ORD-4512,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,,"Dear Priya Sharma,
+
+Thank you for your continued patience regarding your order (ORD-4512). I understand how concerning it is when an order does not arrive as expected. 
+
+According to our shipping policy, standard orders are typically delivered within 3 to 5 business days following order confirmation. Since your order was expected yesterday, I recommend checking the tracking information that was sent to you via email or SMS. This information can help you see the current status of your package. You can also track your order through the ""Track Order"" tab on our website or your account dashboard.
+
+If you are unable to locate the tracking information or if you have any further questions, please let me know. I have escalated your inquiry to our human customer support team, who will be able to assist you further.
+
+I sincerely apologize for any inconvenience this delay may have caused and appreciate your understanding.",Escalated,High urgency + No matching document in knowledge base,Shipping,High,Frustrated
+TKT-0006,2026-11-04 12:48:34,Priya Sharma · ORD-45166,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,shipping_policy.md,"Dear Priya Sharma, 
+
+Thank you for reaching out regarding your order (ORD-45166). I understand how frustrating it can be when an expected delivery does not arrive on time. 
+
+According to our shipping policy, standard orders are typically delivered within 3 to 5 business days following order confirmation. If your order was supposed to arrive yesterday, it may still be in transit. I recommend checking the tracking information that was sent to you via email or SMS, as this will provide the most up-to-date status of your shipment.
+
+If you are unable to locate the tracking details or if the package does not arrive soon, please let us know, and we will escalate your inquiry to our human customer support team for further assistance.
+
+Thank you for your patience, and I hope your order arrives soon!",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0007,2026-11-04 12:48:43,Priya Sharma · ORD-45166,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,shipping_policy.md,"Dear Priya Sharma,
+
+I appreciate your patience as we look into the status of your order (ORD-45166). I understand how concerning it is when an order does not arrive as expected.
+
+As per our shipping policy, standard orders are typically delivered within 3 to 5 business days after order confirmation. Since your order was expected yesterday, it may still be in transit. I encourage you to check the tracking information that was sent to you via email or SMS, as it will provide the latest updates on your shipment.
+
+If you are unable to find the tracking details or if your order does not arrive soon, please let us know. Your inquiry has been escalated to our human customer support team, who will assist you further.
+
+Thank you for your understanding, and I hope your order arrives shortly!",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0008,2026-11-04 12:48:48,Priya Sharma · ORD-45166,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,,"Dear Priya Sharma,
+
+Thank you for your continued patience regarding your order (ORD-45166). I understand how frustrating it can be when an order does not arrive as expected.
+
+According to our shipping policy, standard orders are typically delivered within 3 to 5 business days after order confirmation. Since your order was expected yesterday, it may still be in transit. I recommend checking the tracking information that was sent to you via email or SMS, as this will provide the most accurate status of your shipment.
+
+If you are unable to locate the tracking details or if your order does not arrive soon, please let us know. Your inquiry has been escalated to our human customer support team, who will be able to assist you further.
+
+Thank you for your understanding, and I hope your order arrives shortly!",Escalated,High urgency + No matching document in knowledge base,Shipping,High,Frustrated
+TKT-0009,2026-11-04 12:54:18,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0010,2026-11-04 12:59:50,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0011,2026-11-04 13:00:47,Vedhaviyas · ORD-4444,I forgot my password,Account · Low · Neutral,account_and_login.md,"Dear Vedhaviyas,
+
+I understand that forgetting your password can be frustrating, and I'm here to help you regain access to your account. Please follow these steps to reset your password:
+
+1. Navigate to the login screen and click on the **""Forgot Password?""** link located directly below the password input field.
+2. Enter the email address associated with your account and click **""Send Reset Link.""**
+3. Check your inbox for an email from `auth@ourstore.com` within 2 to 3 minutes. If you don’t see it, please check your Spam, Junk, or Promotions folder.
+4. Click the secure link in the email to reset your password. Please note that this link is only valid for **15 minutes**.
+5. Create a new strong password that includes at least 8 characters, one uppercase letter, one number, and one special character.
+6. Finally, return to the login page and sign in with your new credentials.
+
+If you encounter any issues during this process, please let me know, and I will assist you further.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Account,Low,Neutral
+TKT-0012,2026-11-04 13:00:58,Customer · ORD-4444,I forgot my password,Account · Low · Neutral,account_and_login.md,"Dear Customer,
+
+I understand that you're having trouble accessing your account due to a forgotten password. To help you regain access, please follow these steps:
+
+1. Go to the login screen and click on the **""Forgot Password?""** link located just below the password input field.
+2. Enter the email address associated with your account and click **""Send Reset Link.""**
+3. Check your inbox for an email from `auth@ourstore.com` within 2 to 3 minutes. If you don't see it, please check your Spam, Junk, or Promotions folder.
+4. Click the secure link in the email to reset your password. Please note that this link is valid for **15 minutes**.
+5. Create a new strong password that includes at least 8 characters, one uppercase letter, one number, and one special character.
+6. Finally, return to the login page and sign in with your new credentials.
+
+If you need any further assistance, please feel free to reach out.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Account,Low,Neutral
+TKT-0013,2026-11-04 13:01:04,Vedhaviyas · ORD-4444,I forgot my password,Account · Low · Neutral,,"Dear Customer,
+
+I understand that you're currently unable to access your account due to a forgotten password. To help you regain access, please follow these steps:
+
+1. Go to the login screen and click on the **""Forgot Password?""** link located just below the password input field.
+2. Enter the email address associated with your account and click **""Send Reset Link.""**
+3. Check your inbox for an email from `auth@ourstore.com` within 2 to 3 minutes. If you don’t see it, please check your Spam, Junk, or Promotions folder.
+4. Click the secure link in the email to reset your password. Please note that this link is valid for **15 minutes**.
+5. Create a new strong password that includes at least 8 characters, one uppercase letter, one number, and one special character.
+6. Finally, return to the login page and sign in with your new credentials.
+
+If you encounter any issues or need further assistance, please don’t hesitate to reach out.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,No matching document in knowledge base,Account,Low,Neutral
+TKT-0014,2026-11-04 13:06:32,Liam O'Connor · ORD-4102,"My order tracking says estimated delivery was yesterday, but the package hasn't shown up at my door yet. Is it lost, or should I wait longer?",Shipping · High · Frustrated,shipping_policy.md,"Dear Liam O'Connor, 
+
+Thank you for reaching out regarding your order (ORD-4102). I understand how concerning it can be when a package doesn't arrive as expected. According to our shipping policy, if your estimated delivery date was yesterday, we recommend allowing a 24 to 48 hour buffer period for any potential delays. This can happen due to various reasons such as severe weather or high shipping volumes.
+
+If your package does not arrive within the next couple of days, please let us know, and we can assist you in filing a carrier claim or arranging for a replacement shipment. We appreciate your patience and understanding during this time.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0015,2026-11-04 13:06:39,Liam O'Connor · ORD-4102,"My order tracking says estimated delivery was yesterday, but the package hasn't shown up at my door yet. Is it lost, or should I wait longer?",Shipping · High · Frustrated,shipping_policy.md,"Dear Liam O'Connor,
+
+Thank you for your patience regarding your order (ORD-4102). I understand how frustrating it can be when a delivery is delayed. Based on our shipping policy, if your estimated delivery date was yesterday, we recommend allowing a 24 to 48 hour buffer period for any unexpected delays that may occur, such as severe weather or high shipping volumes.
+
+If your package does not arrive within the next couple of days, please reach out to us again. We can assist you in filing a carrier claim or arranging for a replacement shipment if necessary. Thank you for your understanding, and we appreciate your patience during this time.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0016,2026-11-04 13:06:44,Liam O'Connor · ORD-4102,"My order tracking says estimated delivery was yesterday, but the package hasn't shown up at my door yet. Is it lost, or should I wait longer?",Shipping · High · Frustrated,,"Dear Liam O'Connor,
+
+I appreciate you reaching out about your order (ORD-4102). I understand how concerning it is when a package doesn't arrive on time. According to our shipping policy, if your estimated delivery date was yesterday, we recommend allowing a 24 to 48 hour buffer period for any unexpected delays, which can occur due to factors like severe weather or high shipping volumes.
+
+If your package does not arrive within the next couple of days, please contact us again, and we will assist you in filing a carrier claim or arranging for a replacement shipment if needed. Thank you for your understanding and patience during this time.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + No matching document in knowledge base,Shipping,High,Frustrated
+TKT-0017,2026-11-04 13:09:47,Sophia Martinez · ORD-7821,"I received the sneakers I purchased 10 days ago, but the size is too tight. How do I initiate a return and get my money refunded back to my original payment method?",Refund · Medium · Neutral,refund_policy.md,"Dear Sophia, 
+
+Thank you for reaching out regarding your recent order. I'm sorry to hear that the sneakers you received are too tight. You can initiate a return within our 30-day return window, which starts from the confirmed date of delivery. To ensure a smooth return process, please make sure the sneakers are unused, unworn, unwashed, and returned in their original packaging with all tags and accessories intact.
+
+Once we receive the returned item, we will process your refund back to your original payment method. If you need further assistance with the return process or have any questions, please feel free to ask.
+
+Thank you for your understanding, and I hope to assist you further!
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Refund,Medium,Neutral
+TKT-0018,2026-11-04 13:09:54,Sophia Martinez · ORD-7821,"I received the sneakers I purchased 10 days ago, but the size is too tight. How do I initiate a return and get my money refunded back to my original payment method?",Refund · Medium · Neutral,refund_policy.md,"Dear Sophia,
+
+Thank you for contacting us about your order. I'm sorry to hear that the sneakers you received are too tight. You can initiate a return within our 30-day return window, which begins from the confirmed date of delivery. Please ensure that the sneakers are unused, unworn, unwashed, and returned in their original packaging with all tags and accessories intact.
+
+Once we receive the returned item, we will process your refund back to your original payment method. If you have any questions or need assistance with the return process, please don't hesitate to reach out.
+
+Thank you for your understanding, and I hope this helps!
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Refund,Medium,Neutral
+TKT-0019,2026-11-04 13:09:58,Sophia Martinez · ORD-7821,"I received the sneakers I purchased 10 days ago, but the size is too tight. How do I initiate a return and get my money refunded back to my original payment method?",Refund · Medium · Neutral,,"Dear Sophia,
+
+Thank you for reaching out regarding your order. I'm sorry to hear that the sneakers you received are too tight. To initiate a return, you can do so within our 30-day return window, which starts from the confirmed date of delivery. Please ensure that the sneakers are unused, unworn, unwashed, and returned in their original packaging with all tags and accessories intact.
+
+Once we receive the returned item, we will process your refund back to your original payment method. If you have any further questions or need assistance with the return process, please feel free to ask.
+
+Thank you for your understanding, and I hope this information helps!
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,No matching document in knowledge base,Refund,Medium,Neutral
+TKT-0020,2026-11-04 13:14:16,Priya Sharma · ORD-4512,"I want to complete payment using Bitcoin or Ethereum, or arrange an international bank wire transfer from Dubai. Which crypto wallet address or IBAN should I transfer the funds to?",Billing · Low · Neutral,,"Dear Priya Sharma, 
+
+Thank you for reaching out regarding your payment options. I apologize, but we currently do not have an automated policy or offering for completing payments using Bitcoin, Ethereum, or international bank wire transfers. To assist you further, I will escalate your inquiry to our human customer support team, who will be able to provide you with the necessary information and guidance. 
+
+Thank you for your understanding, and we appreciate your patience.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,No matching document in knowledge base + Low resolution confidence,Billing,Low,Neutral
+TKT-0021,2026-11-04 13:14:23,Priya Sharma · ORD-4512,"I want to complete payment using Bitcoin or Ethereum, or arrange an international bank wire transfer from Dubai. Which crypto wallet address or IBAN should I transfer the funds to?",Billing · Low · Neutral,,"Dear Priya Sharma,
+
+Thank you for your inquiry regarding payment options. I regret to inform you that we currently do not have an automated policy or offering for payments using Bitcoin, Ethereum, or international bank wire transfers. I understand this may be disappointing, and I apologize for any inconvenience this may cause.
+
+To ensure you receive the assistance you need, I have escalated your request to our human customer support team, who will be in touch with you shortly to provide further guidance.
+
+Thank you for your understanding.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,No matching document in knowledge base + Low resolution confidence,Billing,Low,Neutral
+TKT-0022,2026-11-04 13:14:27,Priya Sharma · ORD-4512,"I want to complete payment using Bitcoin or Ethereum, or arrange an international bank wire transfer from Dubai. Which crypto wallet address or IBAN should I transfer the funds to?",Billing · Low · Neutral,,"Dear Priya Sharma,
+
+Thank you for reaching out regarding your payment options. I apologize, but we currently do not have an automated policy or offering for completing payments using Bitcoin, Ethereum, or international bank wire transfers. I understand this may be frustrating, and I appreciate your patience.
+
+To assist you further, I have escalated your inquiry to our human customer support team, who will be able to provide you with the necessary information and guidance.
+
+Thank you for your understanding.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,No matching document in knowledge base + Payment dispute / legal threat / fraud inquiry + Low resolution confidence,Billing,Low,Neutral
+TKT-0023,2026-11-04 13:16:22,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0024,2026-11-04 13:17:38,Priya Sharma · ORD-4512,"Broken product, I need this to be replaced immediatly",Product · High · Frustrated,product_faq.md,"Dear Priya Sharma, 
+
+I’m truly sorry to hear that your product arrived broken. I understand how frustrating this situation can be, and I’m here to help you with the replacement process.
+
+Since you reported the issue, you are eligible for an immediate free replacement. To proceed, please follow these steps:
+
+1. Take 2 to 3 clear photos or a short video showing the broken product, including the serial number label and the condition of the shipping box.
+2. Visit your account ""Orders"" page, select the broken item, and click on ""Request Replacement."" Alternatively, you can reply to your order confirmation email and attach the photos.
+3. Once we receive your request, our team will issue a replacement order within 24 hours, and it will be shipped to you via complimentary express shipping.
+
+Please remember that you do not need to return the broken item; you can safely dispose of it after receiving confirmation of your replacement.
+
+If you have any further questions or need assistance, feel free to reach out. Thank you for your understanding, and we appreciate your patience as we resolve this for you.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + Frustrated sentiment,Product,High,Frustrated
+TKT-0025,2026-11-04 13:17:47,Priya Sharma · ORD-4512,"Broken product, I need this to be replaced immediatly",Product · High · Frustrated,product_faq.md,"Dear Priya Sharma,
+
+Thank you for your patience as we address your concern regarding the broken product. I understand how important it is to get this resolved quickly, and I want to ensure you receive the immediate replacement you need.
+
+To initiate the replacement process, please follow these steps:
+
+1. Take 2 to 3 clear photos or a short video showing the broken product, including the serial number label and the condition of the shipping box.
+2. Visit your account ""Orders"" page, select the broken item, and click on ""Request Replacement."" Alternatively, you can reply to your order confirmation email and attach the photos.
+3. Once we receive your request, our team will issue a replacement order within 24 hours, and it will be shipped to you via complimentary express shipping.
+
+Please remember that you do not need to return the broken item; you can safely dispose of it after receiving confirmation of your replacement.
+
+If you have any further questions or need assistance, please don’t hesitate to reach out. We appreciate your understanding and are here to help you.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + Frustrated sentiment,Product,High,Frustrated
+TKT-0026,2026-11-04 13:17:51,Priya Sharma · ORD-4512,"Broken product, I need this to be replaced immediatly",Product · High · Frustrated,,"Dear Priya Sharma,
+
+I sincerely apologize for the inconvenience caused by receiving a broken product. I understand how frustrating this can be, and I'm here to assist you in getting a replacement as quickly as possible.
+
+To initiate the immediate replacement process, please follow these steps:
+
+1. Take 2 to 3 clear photos or a short video showing the broken product, including the serial number label and the condition of the shipping box.
+2. Visit your account ""Orders"" page, select the broken item, and click on ""Request Replacement."" Alternatively, you can reply to your order confirmation email and attach the photos.
+3. Once we receive your request, our team will issue a replacement order within 24 hours, and it will be shipped to you with complimentary express shipping.
+
+Please remember that you do not need to return the broken item; you can safely dispose of it after receiving confirmation of your replacement.
+
+If you have any further questions or need additional assistance, please feel free to reach out. Thank you for your understanding, and we appreciate your patience as we resolve this for you.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + No matching document in knowledge base,Product,High,Frustrated
+TKT-0027,2026-11-04 13:22:28,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0028,2026-11-04 13:26:32,Priya · ORD-4512,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,shipping_policy.md,"Dear Priya, 
+
+I understand your frustration regarding the delay in the delivery of your order (ORD-4512). According to our shipping policy, standard orders are typically delivered within 3 to 5 business days following order confirmation. Since your order was expected to arrive yesterday, it may still be in transit. 
+
+I recommend checking the tracking information that was sent to you via email or SMS, as it can provide the latest updates on your order's status. If you need further assistance or cannot find the tracking details, please let me know, and I will escalate your inquiry to our human customer support team for more help.
+
+Thank you for your patience, and I apologize for any inconvenience this may have caused.",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0029,2026-11-04 13:26:39,Priya · ORD-4512,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,shipping_policy.md,"Dear Priya,
+
+I understand how frustrating it can be to not have your order (ORD-4512) arrive as expected. According to our shipping policy, standard orders are typically delivered within 3 to 5 business days after order confirmation. Since your order was supposed to arrive yesterday, it may still be in transit.
+
+I recommend checking the tracking information that was sent to you via email or SMS, as it will provide the most current updates on your order's status. If you are unable to find the tracking details or need further assistance, please let me know, and I can escalate your inquiry to our human customer support team for additional help.
+
+Thank you for your understanding, and I apologize for any inconvenience this may have caused.",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0030,2026-11-04 13:26:43,Priya · ORD-4512,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,,"Dear Priya,
+
+I completely understand your frustration regarding the delay of your order (ORD-4512), which was expected to arrive yesterday. According to our shipping policy, standard orders are typically delivered within 3 to 5 business days after order confirmation. It seems that your order may still be in transit.
+
+Please check the tracking information that was sent to you via email or SMS, as it will provide the latest updates on your order's status. If you are unable to locate the tracking details or require further assistance, please let me know, and I will ensure your inquiry is escalated to our human customer support team for additional help.
+
+Thank you for your patience, and I sincerely apologize for any inconvenience this may have caused.",Escalated,High urgency + No matching document in knowledge base,Shipping,High,Frustrated
+TKT-0031,2026-11-04 13:27:18,Priya · ORD-4512,Where is my order?,Shipping · Medium · Neutral,shipping_policy.md,"Hi Priya, 
+
+Thank you for reaching out about your order (Order ID: ORD-4512). Typically, orders are delivered within 3 to 5 business days following confirmation. If your order was confirmed more than 5 business days ago, please allow an additional 24 to 48 hours for any potential updates from the carrier, as they may experience delays due to various factors.
+
+You should have received a tracking number via email or SMS within 24 hours of dispatch, which you can use to check the status of your shipment through the ""Track Order"" tab on our website or your account dashboard. If your package has not moved or arrived after 3 consecutive business days past the estimated delivery date, please let us know, and we can assist you further.
+
+Thank you for your patience, and I hope your order arrives soon!",Resolved,None,Shipping,Medium,Neutral
+TKT-0032,2026-11-04 13:27:25,Priya · ORD-4512,Where is my order?,Shipping · Medium · Neutral,shipping_policy.md,"Thank you for your inquiry regarding the status of your order. Typically, orders are delivered within 3 to 5 business days after confirmation. If your order was confirmed more than 5 business days ago, please allow an additional 24 to 48 hours for any updates from the carrier, as they may experience delays due to various factors.
+
+You should have received a tracking number via email or SMS within 24 hours of dispatch, which you can use to check the status of your shipment through the ""Track Order"" tab on our website or your account dashboard. If your package has not moved or arrived after 3 consecutive business days past the estimated delivery date, please reach out to us, and we will assist you further.
+
+Thank you for your patience, and we hope your order arrives soon!",Resolved,None,Shipping,Medium,Neutral
+TKT-0033,2026-11-04 13:28:14,Priya · ORD-4512,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,shipping_policy.md,"Hi Priya, 
+
+Thank you for reaching out about your order (ORD-4512). I understand how frustrating it can be when a package doesn't arrive as expected. According to our shipping policy, if your scheduled delivery date has passed, we recommend allowing a 24 to 48 hour buffer period for the carrier to update the delivery status or attempt redelivery. 
+
+If your package has not arrived after 3 consecutive business days past the estimated delivery date, please let us know, and we can assist you in filing a carrier claim or arranging for a replacement shipment. 
+
+Thank you for your patience, and please feel free to reach out if you have any further questions.",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0034,2026-11-04 13:30:20,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0035,2026-11-04 13:30:37,Priya · ORD-4512,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,shipping_policy.md,"Dear Priya, 
+
+I understand how frustrating it can be to not receive your order on time, and I sincerely apologize for the inconvenience. According to our shipping policy, orders typically have a delivery window of 3 to 5 business days. Since your order was expected yesterday, it may still be in transit. 
+
+I recommend checking the tracking information that was sent to you via email or SMS, as it can provide the most up-to-date status of your shipment. If you need further assistance or cannot locate the tracking details, please let me know, and I will escalate this issue to our human customer support team for you.
+
+Thank you for your patience, and I hope to resolve this for you soon.",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0036,2026-11-04 13:30:38,Priya · ORD-4512,Where is my order? It was supposed to arrive yesterday.,Shipping · High · Frustrated,shipping_policy.md,"Dear Priya, 
+
+I understand how frustrating it can be to not receive your order on time, and I sincerely apologize for the inconvenience. According to our shipping policy, orders typically have a delivery window of 3 to 5 business days. Since your order was expected yesterday, it may still be in transit. 
+
+I recommend checking the tracking information that was sent to you via email or SMS, as it can provide the most up-to-date status of your shipment. If you need further assistance or cannot locate the tracking details, please let me know, and I will escalate this issue to our human customer support team for you.
+
+Thank you for your patience, and I hope to resolve this for you soon.",Escalated,High urgency,Shipping,High,Frustrated
+TKT-0037,2026-11-04 13:36:03,Priya Sharma · ORD-4512,Billing disputes,Billing · Medium · Neutral,,"Dear Priya Sharma, 
+
+Thank you for reaching out regarding your billing dispute related to Order ID ORD-4512. I apologize for any confusion or inconvenience this may have caused. Unfortunately, I do not have specific information or automated policies to address your inquiry directly. However, I will ensure that your concern is forwarded to our human customer support team, who will be able to assist you further with your billing dispute.
+
+Thank you for your patience, and we appreciate your understanding.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,No matching document in knowledge base + Low resolution confidence,Billing,Medium,Neutral
+TKT-0038,2026-11-04 13:36:03,Priya Sharma · ORD-4512,Billing disputes,Billing · Medium · Neutral,,"Dear Priya Sharma, 
+
+Thank you for reaching out regarding your billing dispute related to Order ID ORD-4512. I apologize for any confusion or inconvenience this may have caused. Unfortunately, I do not have specific information or automated policies to address your inquiry directly. However, I will ensure that your concern is forwarded to our human customer support team, who will be able to assist you further with your billing dispute.
+
+Thank you for your patience, and we appreciate your understanding.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,No matching document in knowledge base + Low resolution confidence,Billing,Medium,Neutral
+TKT-0039,2026-11-04 13:38:05,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0040,2026-11-04 13:43:48,Priya Sharma · ORD-4512,Test,Other · Low · Neutral,,"Dear Priya Sharma, 
+
+Thank you for reaching out to us. It seems that your message was a test complaint without any specific issue mentioned. If you have any questions or concerns regarding your order or any other matter, please feel free to share, and I would be more than happy to assist you. 
+
+Looking forward to hearing from you!
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,No matching document in knowledge base + Low resolution confidence,Other,Low,Neutral
+TKT-0041,2026-11-04 13:43:48,Priya Sharma · ORD-4512,Test,Other · Low · Neutral,,"Dear Priya Sharma, 
+
+Thank you for reaching out to us. It seems that your message was a test complaint without any specific issue mentioned. If you have any questions or concerns regarding your order or any other matter, please feel free to share, and I would be more than happy to assist you. 
+
+Looking forward to hearing from you!
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,No matching document in knowledge base + Low resolution confidence,Other,Low,Neutral
+TKT-0042,2026-11-04 13:46:44,Priya Sharma · ORD-4512,Late shipment and product broken,Shipping · High · Frustrated,"shipping_policy.md, product_faq.md","Dear Priya Sharma,
+
+I sincerely apologize for the inconvenience you've experienced with the late shipment and the broken product from your order (ORD-4512). I understand how frustrating this situation can be, and I'm here to help you resolve it.
+
+Regarding the late shipment, please allow a 24 to 48 hour buffer period, as couriers sometimes face unexpected delays. If your package has not moved or arrived after three consecutive business days past the estimated delivery date, please let us know so we can assist you further.
+
+As for the broken product, we offer an immediate replacement guarantee for items that arrive damaged. To initiate the replacement process, please follow these steps:
+1. Take 2 to 3 clear photos or a short video showing the broken unit, including the serial number label and the condition of the shipping box.
+2. Visit your account ""Orders"" page, select the broken item, and click ""Request Replacement,"" or you can reply to your order confirmation email with the attached photos.
+3. Once we receive your request, our team will issue a replacement order within 24 hours with complimentary express shipping.
+
+You do not need to return the broken item; please dispose of it safely after receiving confirmation of your replacement.
+
+Thank you for your understanding, and I appreciate your patience as we work to resolve this matter for you.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0043,2026-11-04 13:46:44,Priya Sharma · ORD-4512,Late shipment and product broken,Shipping · High · Frustrated,"shipping_policy.md, product_faq.md","Dear Priya Sharma,
+
+I sincerely apologize for the inconvenience you've experienced with the late shipment and the broken product from your order (ORD-4512). I understand how frustrating this situation can be, and I'm here to help you resolve it.
+
+Regarding the late shipment, please allow a 24 to 48 hour buffer period, as couriers sometimes face unexpected delays. If your package has not moved or arrived after three consecutive business days past the estimated delivery date, please let us know so we can assist you further.
+
+As for the broken product, we offer an immediate replacement guarantee for items that arrive damaged. To initiate the replacement process, please follow these steps:
+1. Take 2 to 3 clear photos or a short video showing the broken unit, including the serial number label and the condition of the shipping box.
+2. Visit your account ""Orders"" page, select the broken item, and click ""Request Replacement,"" or you can reply to your order confirmation email with the attached photos.
+3. Once we receive your request, our team will issue a replacement order within 24 hours with complimentary express shipping.
+
+You do not need to return the broken item; please dispose of it safely after receiving confirmation of your replacement.
+
+Thank you for your understanding, and I appreciate your patience as we work to resolve this matter for you.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency,Shipping,High,Frustrated
+TKT-0044,2026-11-04 13:48:36,Priya Sharma · ORD-4512,"I've billing issues, you have charged more that what it was there in the website",Billing · High · Frustrated,,"Dear Priya Sharma, 
+
+Thank you for reaching out and sharing your concerns regarding the billing issue with your order (ORD-4512). I understand how frustrating it can be to encounter discrepancies in pricing, and I sincerely apologize for any inconvenience this has caused you.
+
+Unfortunately, I do not have access to specific billing policies or procedures to address your issue directly. However, I will ensure that your inquiry is forwarded to our human customer support team, who will be able to assist you further in resolving this matter.
+
+Thank you for your patience, and we appreciate your understanding as we work to address your concerns.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + Frustrated customer + No matching document in knowledge base + Low resolution confidence,Billing,High,Frustrated
+TKT-0045,2026-11-04 13:48:36,Priya Sharma · ORD-4512,"I've billing issues, you have charged more that what it was there in the website",Billing · High · Frustrated,,"Dear Priya Sharma, 
+
+Thank you for reaching out and sharing your concerns regarding the billing issue with your order (ORD-4512). I understand how frustrating it can be to encounter discrepancies in pricing, and I sincerely apologize for any inconvenience this has caused you.
+
+Unfortunately, I do not have access to specific billing policies or procedures to address your issue directly. However, I will ensure that your inquiry is forwarded to our human customer support team, who will be able to assist you further in resolving this matter.
+
+Thank you for your patience, and we appreciate your understanding as we work to address your concerns.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + No matching document in knowledge base + Payment dispute / legal threat / fraud inquiry + Low resolution confidence,Billing,High,Frustrated
+TKT-0046,2026-11-04 13:50:58,Priya Sharma · ORD-4512,"I've billing issues, you have charged more that what it was there in the website",Billing · High · Frustrated,,"Dear Priya Sharma, 
+
+Thank you for reaching out and sharing your concerns regarding the billing issue with your order (ORD-4512). I sincerely apologize for any frustration this may have caused you. Unfortunately, I do not have access to specific billing policies or details regarding discrepancies in charges at this moment. 
+
+To resolve this matter effectively, I will escalate your inquiry to our human customer support team, who will be able to assist you further. They will reach out to you shortly to address your concerns.
+
+Thank you for your patience, and I appreciate your understanding.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + Frustrated customer + No matching document in knowledge base + Low resolution confidence,Billing,High,Frustrated
+TKT-0047,2026-11-04 13:50:58,Priya Sharma · ORD-4512,"I've billing issues, you have charged more that what it was there in the website",Billing · High · Frustrated,,"Dear Priya Sharma, 
+
+Thank you for reaching out and sharing your concerns regarding the billing issue with your order (ORD-4512). I sincerely apologize for any frustration this may have caused you. Unfortunately, I do not have access to specific billing policies or details regarding discrepancies in charges at this moment. 
+
+To resolve this matter effectively, I will escalate your inquiry to our human customer support team, who will be able to assist you further. They will reach out to you shortly to address your concerns.
+
+Thank you for your patience, and I appreciate your understanding.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + No matching document in knowledge base + Payment dispute / legal threat / fraud inquiry + Low resolution confidence,Billing,High,Frustrated
+TKT-0048,2026-11-04 14:09:37,Priya Sharma · ORD-4512,"Where is my order? It was supposed to arrive yesterday, but the tracking hasn't updated since morning.",Shipping · High · Frustrated,shipping_policy.md,"Dear Priya, 
+
+Thank you for reaching out regarding your order (ORD-4512). I understand how frustrating it can be when a package does not arrive as expected. According to our shipping policy, while orders typically arrive within 3 to 5 business days, there can occasionally be delays due to factors such as severe weather or high shipping volumes.
+
+Since your order was scheduled to arrive yesterday, I recommend allowing a 24 to 48 hour buffer for the tracking information to update or for the carrier to attempt redelivery. If your package does not arrive within this timeframe, please let us know, and we can assist you further with a lost package investigation or a replacement shipment.
+
+Thank you for your patience, and please feel free to reach out if you have any more questions.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency + Frustrated sentiment,Shipping,High,Frustrated
+TKT-0049,2026-11-04 14:09:37,Priya Sharma · ORD-4512,"Where is my order? It was supposed to arrive yesterday, but the tracking hasn't updated since morning.",Shipping · High · Frustrated,shipping_policy.md,"Dear Priya, 
+
+Thank you for reaching out regarding your order (ORD-4512). I understand how frustrating it can be when a package does not arrive as expected. According to our shipping policy, while orders typically arrive within 3 to 5 business days, there can occasionally be delays due to factors such as severe weather or high shipping volumes.
+
+Since your order was scheduled to arrive yesterday, I recommend allowing a 24 to 48 hour buffer for the tracking information to update or for the carrier to attempt redelivery. If your package does not arrive within this timeframe, please let us know, and we can assist you further with a lost package investigation or a replacement shipment.
+
+Thank you for your patience, and please feel free to reach out if you have any more questions.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Escalated,High urgency,Shipping,High,Frustrated
+TKT-0050,2026-11-04 14:23:22,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0051,2026-11-04 14:29:29,Priya Sharma · ORD-4512,"Where is my order? It was supposed to arrive yesterday, but the tracking hasn't updated since morning.",Shipping · Medium · Frustrated,shipping_policy.md,"Dear Priya, 
+
+Thank you for reaching out regarding your order (ORD-4512). I understand how frustrating it can be to experience a delay, especially when you were expecting your package yesterday. 
+
+Please note that sometimes couriers face unexpected delays due to factors like severe weather or high shipping volumes. We recommend allowing a 24 to 48 hour buffer period after the scheduled delivery date, as tracking updates may take some time to reflect. 
+
+If your package has not moved or arrived after 3 consecutive business days past the estimated delivery date, please let us know, and we can assist you in filing a carrier claim or arranging for a replacement shipment.
+
+Thank you for your patience, and please feel free to reach out if you have any further questions.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Shipping,Medium,Frustrated
+TKT-0052,2026-11-04 14:29:29,Priya Sharma · ORD-4512,"Where is my order? It was supposed to arrive yesterday, but the tracking hasn't updated since morning.",Shipping · Medium · Frustrated,shipping_policy.md,"Dear Priya, 
+
+Thank you for reaching out regarding your order (ORD-4512). I understand how frustrating it can be to experience a delay, especially when you were expecting your package yesterday. 
+
+Please note that sometimes couriers face unexpected delays due to factors like severe weather or high shipping volumes. We recommend allowing a 24 to 48 hour buffer period after the scheduled delivery date, as tracking updates may take some time to reflect. 
+
+If your package has not moved or arrived after 3 consecutive business days past the estimated delivery date, please let us know, and we can assist you in filing a carrier claim or arranging for a replacement shipment.
+
+Thank you for your patience, and please feel free to reach out if you have any further questions.
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Shipping,Medium,Frustrated
+TKT-0053,2026-11-04 14:37:37,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0054,2026-11-04 14:41:20,Priya Sharma · ORD-4512,The blender I received is broken. Can I get a replacement?,Product · Medium · Neutral,product_faq.md,"Dear Priya Sharma, 
+
+I’m truly sorry to hear that the blender you received is broken. I understand how frustrating this situation can be. Fortunately, we have an immediate replacement guarantee for defective products like yours. 
+
+To proceed with your replacement, please follow these steps:
+1. Take 2 to 3 clear photos or a short video showing the broken unit, including the serial number label and the condition of the shipping box.
+2. Visit your account ""Orders"" page, select the broken item, and click on **""Request Replacement""**. Alternatively, you can reply to your order confirmation email and attach the photos.
+
+Once we receive your request, our team will issue a replacement order within 24 hours and provide complimentary express shipping. Please remember that you do not need to return the broken blender; you can dispose of it safely.
+
+If you have any further questions or need assistance, feel free to reach out. 
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Product,Medium,Neutral
+TKT-0055,2026-11-04 14:41:20,Priya Sharma · ORD-4512,The blender I received is broken. Can I get a replacement?,Product · Medium · Neutral,product_faq.md,"Dear Priya Sharma, 
+
+I’m truly sorry to hear that the blender you received is broken. I understand how frustrating this situation can be. Fortunately, we have an immediate replacement guarantee for defective products like yours. 
+
+To proceed with your replacement, please follow these steps:
+1. Take 2 to 3 clear photos or a short video showing the broken unit, including the serial number label and the condition of the shipping box.
+2. Visit your account ""Orders"" page, select the broken item, and click on **""Request Replacement""**. Alternatively, you can reply to your order confirmation email and attach the photos.
+
+Once we receive your request, our team will issue a replacement order within 24 hours and provide complimentary express shipping. Please remember that you do not need to return the broken blender; you can dispose of it safely.
+
+If you have any further questions or need assistance, feel free to reach out. 
+
+Best regards,  
+[Your Name]  
+Customer Support Team",Resolved,None,Product,Medium,Neutral
+TKT-0056,2026-11-04 15:08:38,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
+TKT-0057,2026-11-04 15:09:25,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral

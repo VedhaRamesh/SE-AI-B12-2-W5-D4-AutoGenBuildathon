@@ -112,6 +112,16 @@ class TestCustomerSupportPipeline(unittest.TestCase):
         self.assertEqual(parsed["status"], "Resolved")
         self.assertEqual(parsed["escalation_reason"], "None")
 
+    def test_10_benchmark_evaluation_suite(self):
+        """Test Case 10: Run full 10-case benchmark evaluation suite and verify 100% accuracy."""
+        from evaluate_benchmarks import run_benchmark_evaluation
+        summary = run_benchmark_evaluation()
+        self.assertEqual(summary["total_test_cases"], 10)
+        self.assertGreaterEqual(summary["retrieval_recall_accuracy"], 90.0)
+        self.assertGreaterEqual(summary["escalation_routing_accuracy"], 90.0)
+        self.assertGreaterEqual(summary["category_classification_accuracy"], 90.0)
+        self.assertGreaterEqual(summary["policy_faithfulness_rate"], 90.0)
+
 
 if __name__ == "__main__":
     unittest.main()

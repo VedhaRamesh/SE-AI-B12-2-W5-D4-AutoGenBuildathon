@@ -1,0 +1,99 @@
+{
+  "total_test_cases": 10,
+  "retrieval_recall_accuracy": 100.0,
+  "escalation_routing_accuracy": 100.0,
+  "category_classification_accuracy": 100.0,
+  "policy_faithfulness_rate": 100.0,
+  "cases": [
+    {
+      "id": "TC-01",
+      "name": "Delayed delivery inquiry",
+      "retrieval": "PASS",
+      "source": "shipping_policy.md",
+      "category": "Shipping (PASS)",
+      "routing": "Resolved (PASS)",
+      "faithfulness": "PASS"
+    },
+    {
+      "id": "TC-02",
+      "name": "Shoe return & refund request",
+      "retrieval": "PASS",
+      "source": "refund_policy.md",
+      "category": "Refund (PASS)",
+      "routing": "Resolved (PASS)",
+      "faithfulness": "PASS"
+    },
+    {
+      "id": "TC-03",
+      "name": "Forgot password and login help",
+      "retrieval": "PASS",
+      "source": "account_and_login.md",
+      "category": "Account (PASS)",
+      "routing": "Resolved (PASS)",
+      "faithfulness": "PASS"
+    },
+    {
+      "id": "TC-04",
+      "name": "Damaged product on arrival",
+      "retrieval": "PASS",
+      "source": "product_faq.md",
+      "category": "Product (PASS)",
+      "routing": "Escalated (PASS)",
+      "faithfulness": "PASS"
+    },
+    {
+      "id": "TC-05",
+      "name": "Multiple card charges with legal threat",
+      "retrieval": "PASS",
+      "source": "None",
+      "category": "Billing (PASS)",
+      "routing": "Escalated (PASS)",
+      "faithfulness": "PASS"
+    },
+    {
+      "id": "TC-06",
+      "name": "Corporate custom gift cards inquiry",
+      "retrieval": "PASS",
+      "source": "None",
+      "category": "Other (PASS)",
+      "routing": "Escalated (PASS)",
+      "faithfulness": "PASS"
+    },
+    {
+      "id": "TC-07",
+      "name": "Shipping address modification within 20 mins",
+      "retrieval": "PASS",
+      "source": "shipping_policy.md",
+      "category": "Shipping (PASS)",
+      "routing": "Resolved (PASS)",
+      "faithfulness": "PASS"
+    },
+    {
+      "id": "TC-08",
+      "name": "Suspected account breach and unauthorized card usage",
+      "retrieval": "PASS",
+      "source": "account_and_login.md",
+      "category": "Account (PASS)",
+      "routing": "Escalated (PASS)",
+      "faithfulness": "PASS"
+    },
+    {
+      "id": "TC-09",
+      "name": "Product warranty coverage on kitchen appliances",
+      "retrieval": "PASS",
+      "source": "product_faq.md",
+      "category": "Product (PASS)",
+      "routing": "Resolved (PASS)",
+      "faithfulness": "PASS"
+    },
+    {
+      "id": "TC-10",
+      "name": "Electronic gift card return inquiry",
+      "retrieval": "PASS",
+      "source": "refund_policy.md",
+      "category": "Refund (PASS)",
+      "routing": "Resolved (PASS)",
+      "faithfulness": "PASS"
+    }
+  ]
+}

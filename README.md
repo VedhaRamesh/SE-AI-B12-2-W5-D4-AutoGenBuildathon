@@ -191,10 +191,21 @@ The application will launch in your browser at `http://localhost:8501`.
 | **7** *(Custom)* | *"I just placed an order 20 minutes ago. How do I change my shipping address?"* | Shipping | `shipping_policy.md` | **Resolved** | None (Answered from 1-hour policy) |
 | **8** *(Custom)* | *"I believe my account has been hacked and someone placed unauthorized orders with my saved card. Block my account immediately!"* | Account / Security | None | **Escalated** | High urgency + fraud inquiry |
 
-### Run the Automated Test Suite
+### Run Verification & Evaluation Suites
 
-Run the full automated test suite verifying vector search, escalation logic, and CSV logging:
+1. **ChromaDB Knowledge Base Self-Verification**:
+```bash
+python tools/kb_search.py
+```
+Indexes all 4 policy documents, computes vector chunk embeddings, and runs retrieval smoke tests.
 
+2. **Benchmark Evaluation Suite (Quantitative Recall, Accuracy & Faithfulness)**:
+```bash
+python evaluate_benchmarks.py
+```
+Measures 10 ground-truth test cases across Knowledge Base Retrieval Recall (100%), Escalation Routing Accuracy (100%), Intent Classification (100%), and Policy Faithfulness (100%). Results are saved to `logs/benchmark_evaluation_report.json`.
+
+3. **Automated Unit & Integration Tests**:
 ```bash
 python -m unittest test_cases.py
 ```
