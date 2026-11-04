@@ -7,6 +7,7 @@ Built with AutoGen v0.4+, ChromaDB RAG, and Streamlit.
 
 import asyncio
 import os
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List, Tuple
