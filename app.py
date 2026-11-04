@@ -239,40 +239,40 @@ button[kind="primary"]:hover {
 
 
 # ═══════════════════════════════════════════════════════════════════
-#  CONSTANTS — Preset Test Cases
+#  CONSTANTS — Sample Customer Complaints
 # ═══════════════════════════════════════════════════════════════════
-TEST_CASES: Dict[str, Any] = {
-    "— Select a test case —": None,
-    "TC-1 · Late Shipping (Resolved)": {
+SAMPLE_COMPLAINTS: Dict[str, Any] = {
+    "— Select a recent complaint —": None,
+    "Priya Sharma · ORD-4512 — Delayed delivery inquiry": {
         "name": "Priya Sharma", "order_id": "ORD-4512",
         "complaint": "Where is my order? It was supposed to arrive yesterday.",
     },
-    "TC-2 · Shoe Return & Refund (Resolved)": {
+    "Alex Johnson · ORD-8821 — Shoe return & refund request": {
         "name": "Alex Johnson", "order_id": "ORD-8821",
         "complaint": "I want to return the shoes I bought last week. How do I get a refund?",
     },
-    "TC-3 · Forgot Password (Resolved)": {
-        "name": "Carlos Gomez", "order_id": "ORD-N/A",
+    "Carlos Gomez · ORD-7740 — Unable to access account": {
+        "name": "Carlos Gomez", "order_id": "ORD-7740",
         "complaint": "I forgot my password and can't log in.",
     },
-    "TC-4 · Broken Blender (Resolved)": {
+    "Sarah Miller · ORD-3309 — Damaged product received": {
         "name": "Sarah Miller", "order_id": "ORD-3309",
         "complaint": "The blender I received is broken. Can I get a replacement?",
     },
-    "TC-5 · Triple Charge + Legal Threat (Escalated)": {
+    "Robert Vance · ORD-9901 — Multiple card charges": {
         "name": "Robert Vance", "order_id": "ORD-9901",
         "complaint": "You charged my card three times! Fix this now or I'm contacting my bank and a lawyer.",
     },
-    "TC-6 · Custom Corporate Gift Cards (Escalated)": {
-        "name": "Evelyn Wright", "order_id": "ORD-CORP",
+    "Evelyn Wright · ORD-6150 — Corporate gifting inquiry": {
+        "name": "Evelyn Wright", "order_id": "ORD-6150",
         "complaint": "Do you sell gift cards for a company of 500 employees with custom branding?",
     },
-    "TC-7 · Address Change (Resolved)": {
+    "Daniel Craig · ORD-7712 — Shipping address update": {
         "name": "Daniel Craig", "order_id": "ORD-7712",
         "complaint": "I just placed an order 20 minutes ago. How do I change my shipping address?",
     },
-    "TC-8 · Account Breach & Fraud (Escalated)": {
-        "name": "Maya Patel", "order_id": "ORD-UNKNOWN",
+    "Maya Patel · ORD-2284 — Suspected account breach": {
+        "name": "Maya Patel", "order_id": "ORD-2284",
         "complaint": "I believe my account has been hacked and someone placed unauthorized orders with my saved card. Block my account immediately!",
     },
 }
@@ -487,11 +487,11 @@ with tab_console:
 
         with st.container(border=True):
             selected_case = st.selectbox(
-                "Quick-fill test cases",
-                options=list(TEST_CASES.keys()),
+                "Recent Complaints",
+                options=list(SAMPLE_COMPLAINTS.keys()),
                 key="test_case_select",
             )
-            preset = TEST_CASES.get(selected_case)
+            preset = SAMPLE_COMPLAINTS.get(selected_case)
             _dn = preset["name"] if preset else "Priya Sharma"
             _do = preset["order_id"] if preset else "ORD-4512"
             _dc = preset["complaint"] if preset else ""
