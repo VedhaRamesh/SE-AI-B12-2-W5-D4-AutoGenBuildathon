@@ -1,0 +1,2 @@
+ticket_id,timestamp,customer_name / order_id,complaint,category · urgency · sentiment,kb_sources,response,status,escalation_reason,category,urgency,sentiment
+TKT-0001,2026-11-04 12:41:21,Test User · ORD-9999,Unit test complaint,Shipping · Low · Neutral,shipping_policy.md,Your order is en route.,Resolved,None,Shipping,Low,Neutral
